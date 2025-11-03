@@ -20,9 +20,6 @@ DBG = gdb
 # Find all the C and C++ files we want to compile
 # Note the single quotes around the * expressions. Make will incorrectly expand these otherwise.
 SRCS := $(shell find $(SRC_DIRS) -name '*.cpp' -or -name '*.c' -or -name '*.s')
-SRCS += ../common/src/utils.cpp 
-SRCS += ../widgets/src/filename_input.cpp
-SRCS += ../widgets/src/input_hierch.cpp
 
 # String substitution for every C/C++ file.
 # As an example, hello.cpp turns into ./build/hello.cpp.o
@@ -36,7 +33,7 @@ DEPS := $(OBJS:.o=.d)
 TARFILE = $(TARGET_EXEC:.exe=.tgz)
 
 # Every folder in ./src will need to be passed to GCC so that it can find header files
-INC_DIRS := ./include ../widgets/include ../common/include
+INC_DIRS := ./include 
 #INC_DIRS += $(FLTK_DIR) $(FLTK_BUILD)
 #INC_DIRS += $(HAMLIB_BUILD)/include
 
