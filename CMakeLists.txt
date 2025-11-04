@@ -32,11 +32,20 @@ set(FLTK_DIR "/usr/local/bin"
     CACHE FILEPATH "FLTK installation or build directory")
 find_package(FLTK 1.4.4 CONFIG REQUIRED)
 
+# Create QBS_logo.h - note output created in build
+add_custom_command(
+    OUTPUT "QBS_logo.h"
+    COMMAND xxd -i -n qbs_png ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png > QBS_logo.h
+)
+
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 target_include_directories(${TARGET} PRIVATE ./include)
-target_sources(${TARGET} PRIVATE ${CPPFILES})
-
+# Pick up files generated in build directory
+target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+# Add QBS_logo.h to ensure it gets generated
+target_sources(${TARGET} PRIVATE ${CPPFILES} QBS_logo.h)
 
 target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
 
 install(TARGETS ${TARGET})
+
