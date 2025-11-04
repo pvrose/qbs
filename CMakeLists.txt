@@ -28,6 +28,8 @@ set(CPPFILES
 )
 
 #FLTK
+set(FLTK_DIR "/usr/local/bin"
+    CACHE FILEPATH "FLTK installation or build directory")
 find_package(FLTK 1.4.4 CONFIG REQUIRED)
 
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
