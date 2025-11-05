@@ -46,6 +46,8 @@ endif()
 set(DATAFILES
   ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
 )
+#FLTK
+find_package(FLTK CONFIG REQUIRED)
 
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qbs.png

@@ -2,10 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/CMake Overview
-/.vs/cmake.db
-/.vs/ProjectSettings.json
-/.vs/qbs/CopilotIndices/17.14.1368.60722/CodeChunks.db
+/.vs
 *.db-shm
 *.db-wal
 *.db
@@ -14,3 +11,5 @@
 /.vs/qbs/FileContentIndex/71a0918c-75ec-42dd-918f-161a473c22bd.vsidx
 /.vs/qbs/FileContentIndex/8ee65918-cda3-48c0-8094-1d6a8d21c435.vsidx
 /.vs/qbs/v17/.wsuo
+/build
+/out
