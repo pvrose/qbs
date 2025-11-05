@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(VENDOR "GM3ZZA")
+set(PROGRAMID "QBS")
+
 set(CPPFILES 
     src/filename_input.cpp
     src/input_hierch.cpp
@@ -27,25 +30,39 @@ set(CPPFILES
     src/QBS_window.cpp
 )
 
-#FLTK
-set(FLTK_DIR ${CMAKE_INSTALL_PREFIX}"/bin"
-    CACHE FILEPATH "FLTK installation or build directory")
-find_package(FLTK 1.4.4 CONFIG REQUIRED)
+# set document directory
+if(WIN32)
+  set(CMAKE_INSTALL_DOCDIR C:/ProgramData/${VENDOR}/${PROGRAMID})
+elseif(LINUX)
+  set(CMAKE_INSTALL_DOCDIR /etc/${VENDOR}/${PROGRAMID})
+endif()
 
-# Create QBS_logo.h - note output created in build
-add_custom_command(
-    OUTPUT "QBS_logo.h"
-    COMMAND xxd -i -n qbs_png ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png > QBS_logo.h
+# ser compiler options
+if (MSVC)
+else()
+  add_compile_options(-g)
+endif()
+
+set(DATAFILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
 )
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qbs.png
+  COMMAND cp ${DATAFILES} ${CMAKE_CURRENT_BINARY_DIR}/
+)
+
+#FLTK
+find_package(FLTK CONFIG REQUIRED)
 
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 target_include_directories(${TARGET} PRIVATE ./include)
-# Pick up files generated in build directory
-target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 # Add QBS_logo.h to ensure it gets generated
-target_sources(${TARGET} PRIVATE ${CPPFILES} QBS_logo.h)
+target_sources(${TARGET} PRIVATE ${CPPFILES} ${CMAKE_CURRENT_BINARY_DIR}/qbs.png)
 
 target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
 
 install(TARGETS ${TARGET})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
+    DESTINATION ${CMAKE_INSTALL_DOCDIR})
 

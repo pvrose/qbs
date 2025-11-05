@@ -1,7 +1,6 @@
 #include "QBS_data.h"
 #include "QBS_window.h"
 #include "QBS_consts.h"
-#include "QBS_logo.h"
 
 #include <string>
 
@@ -14,7 +13,7 @@ const char* DATE_FORMAT = "%Y-%m-%d";
 extern int FL_NORMAL_SIZE;
 const char* VERSION = "2.0.2";
 // Main logo
-Fl_PNG_Image main_icon_("QBS_ICON", qbs_png, qbs_png_len);
+Fl_PNG_Image main_icon_("qbs.png");
 
 
 QBS_window* window_;
@@ -32,7 +31,17 @@ int main(int argc, char** argv)
 	// Change FL defaults
 	FL_NORMAL_SIZE = 11;
 
-	Fl_Window::default_icon(&main_icon_);
+	Fl_PNG_Image* icon = new Fl_PNG_Image("qbs.png");
+	if (icon->fail()) {
+#ifdef _WIN32
+		string icon_file = std::string(getenv("APPDATA")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
+#else
+		string icon_file = "/etc/" + VENDOR + "/" + PROGRAM_ID + "/qbs.png";
+#endif
+		delete icon;
+		icon = new Fl_PNG_Image(icon_file.c_str());
+	}
+	Fl_Window::default_icon(icon);
 
 	// Get filename - use argument if set
 	string filename = "";
