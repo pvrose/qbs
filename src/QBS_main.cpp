@@ -12,8 +12,6 @@ using namespace std;
 const char* DATE_FORMAT = "%Y-%m-%d";
 extern int FL_NORMAL_SIZE;
 const char* VERSION = "2.0.2";
-// Main logo
-Fl_PNG_Image main_icon_("qbs.png");
 
 
 QBS_window* window_;

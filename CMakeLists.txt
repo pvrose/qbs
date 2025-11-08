@@ -31,9 +31,9 @@ set(CPPFILES
 )
 
 # set document directory
-if(WIN32)
+if(MSVC)
   set(CMAKE_INSTALL_DOCDIR C:/ProgramData/${VENDOR}/${PROGRAMID})
-elseif(LINUX)
+else()
   set(CMAKE_INSTALL_DOCDIR /etc/${VENDOR}/${PROGRAMID})
 endif()
 
@@ -46,25 +46,24 @@ endif()
 set(DATAFILES
   ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
 )
-#FLTK
-find_package(FLTK CONFIG REQUIRED)
-
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qbs.png
-  COMMAND cp ${DATAFILES} ${CMAKE_CURRENT_BINARY_DIR}/
-)
 
 #FLTK
-find_package(FLTK CONFIG REQUIRED)
+if (MSVC)
+set(FLTK_DIR "C:/Users/pvros/source/repos/fltk/build"
+    CACHE FILEPATH "FLTK installation or build directory")
+endif()
+find_package(FLTK 1.5.0 CONFIG REQUIRED)
 
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 target_include_directories(${TARGET} PRIVATE ./include)
 # Add QBS_logo.h to ensure it gets generated
-target_sources(${TARGET} PRIVATE ${CPPFILES} ${CMAKE_CURRENT_BINARY_DIR}/qbs.png)
+target_sources(${TARGET} PRIVATE ${CPPFILES})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
 
 install(TARGETS ${TARGET})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
+install(FILES ${DATAFILES}
     DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
