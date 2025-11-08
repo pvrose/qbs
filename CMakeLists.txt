@@ -58,8 +58,13 @@ add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 target_include_directories(${TARGET} PRIVATE ./include)
 # Add QBS_logo.h to ensure it gets generated
 target_sources(${TARGET} PRIVATE ${CPPFILES})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
+if(MSVC)
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+else()
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/qbs.png
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
 

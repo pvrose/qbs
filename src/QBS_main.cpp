@@ -28,12 +28,15 @@ int main(int argc, char** argv)
 {	
 	// Change FL defaults
 	FL_NORMAL_SIZE = 11;
-
+	// First look for the icon in the smae directory as the executable
 	Fl_PNG_Image* icon = new Fl_PNG_Image("qbs.png");
 	if (icon->fail()) {
+		// else look in
 #ifdef _WIN32
-		string icon_file = std::string(getenv("APPDATA")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
+		// C:\ProgramData\GM3ZZA\QBS
+		string icon_file = std::string(getenv("ProgramData")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
 #else
+		// /etc/GM3ZZA/QBS
 		string icon_file = "/etc/" + VENDOR + "/" + PROGRAM_ID + "/qbs.png";
 #endif
 		delete icon;
