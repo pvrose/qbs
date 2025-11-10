@@ -32,9 +32,9 @@ set(CPPFILES
 
 # set document directory
 if(MSVC)
-  set(CMAKE_INSTALL_DOCDIR C:/ProgramData/${VENDOR}/${PROGRAMID})
+  set(CMAKE_INSTALL_RPATH C:/ProgramData/${VENDOR}/${PROGRAMID})
 else()
-  set(CMAKE_INSTALL_DOCDIR /etc/${VENDOR}/${PROGRAMID})
+  set(CMAKE_INSTALL_RPATH /etc/${VENDOR}/${PROGRAMID})
 endif()
 
 # ser compiler options
@@ -54,6 +54,7 @@ set(FLTK_DIR "C:/Users/pvros/source/repos/fltk/build"
 endif()
 find_package(FLTK 1.5.0 CONFIG REQUIRED)
 
+set(SMAKE_BUILD_RPATH )
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 target_include_directories(${TARGET} PRIVATE ./include)
 # Add QBS_logo.h to ensure it gets generated
@@ -70,5 +71,5 @@ target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
 
 install(TARGETS ${TARGET})
 install(FILES ${DATAFILES}
-    DESTINATION ${CMAKE_INSTALL_DOCDIR})
+    DESTINATION ${CMAKE_INSTALL_RPATH})
 
