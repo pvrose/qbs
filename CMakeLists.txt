@@ -39,6 +39,7 @@ endif()
 
 # ser compiler options
 if (MSVC)
+  add_compile_options(/MD)
 else()
   add_compile_options(-g)
 endif()
@@ -49,14 +50,20 @@ set(DATAFILES
 
 #FLTK
 if (MSVC)
-set(FLTK_DIR "C:/Users/pvros/source/repos/fltk/build"
-    CACHE FILEPATH "FLTK installation or build directory")
-endif()
+  set(FLTK_INCLUDE_DIR "C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\include")
+  set(FLTK_LIBRARIES "C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\lib\\fltk.lib;C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\lib\\fltk_images.lib;C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\lib\\fltk_png.lib;C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\lib\\fltk_z.lib;gdiplus.lib;Ws2_32.lib;User32.lib;gdi32.lib;comctl32.lib")
+else()
+set(CMAKE_PREFIX_PATH "C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\CMake")
 find_package(FLTK 1.5.0 CONFIG REQUIRED)
+set(FLTK_LIBRARIES fltk::fltk fltk::fltkimages)
+endif()
 
 set(SMAKE_BUILD_RPATH )
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
-target_include_directories(${TARGET} PRIVATE ./include)
+target_include_directories(${TARGET} PRIVATE 
+  ./include
+  ${FLTK_INCLUDE_DIR}
+)
 # Add QBS_logo.h to ensure it gets generated
 target_sources(${TARGET} PRIVATE ${CPPFILES})
 if(MSVC)
@@ -67,7 +74,7 @@ else()
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
-target_link_libraries(${TARGET} PRIVATE fltk::fltk fltk::images)
+target_link_libraries(${TARGET} PRIVATE ${FLTK_LIBRARIES})
 
 install(TARGETS ${TARGET})
 install(FILES ${DATAFILES}
