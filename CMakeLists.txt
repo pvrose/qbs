@@ -55,7 +55,6 @@ if (MSVC)
 else()
 set(CMAKE_PREFIX_PATH "C:\\Users\\pvros\\source\\repos\\fltk\\out\\install\\x64-Release\\CMake")
 find_package(FLTK 1.5.0 CONFIG REQUIRED)
-set(FLTK_LIBRARIES fltk::fltk fltk::fltkimages)
 endif()
 
 set(SMAKE_BUILD_RPATH )
