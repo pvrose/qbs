@@ -1107,17 +1107,23 @@ void QBS_data::trace_boxes(ostream& os) {
 string QBS_data::next_batch() {
 	string batch = get_batch(get_current());
 	if (batch != "Invalid") {
+		// Parse the batch string - format "YYYY Qx" or "YYYY Xx"
+		// where x is the box number within the year
 		int year = stoi(batch.substr(0, 4));
-		int qtr = stoi(batch.substr(6, 1));
-		if (qtr >= 4) {
-			qtr = 1;
-			year++;
+		int box = stoi(batch.substr(6));
+		time_t now = time(0);
+		tm* ltm = gmtime(&now);
+		// If we are still in the same year increment box number
+		// else increment year and reset box number to 1
+		if (year == 1900 + ltm->tm_year) {
+			box++;
 		}
 		else {
-			qtr++;
+			year++;
+			box = 1;
 		}
 		char temp[10];
-		snprintf(temp, 10, "%4d Q%1d", year, qtr);
+		snprintf(temp, 10, "%4d X%1d", year, box);
 		return string(temp);
 	}
 	else {
