@@ -82,10 +82,12 @@ target_include_directories(${TARGET} PRIVATE
 target_sources(${TARGET} PRIVATE ${CPPFILES})
 if(MSVC)
   file(COPY ${QBS_SOURCE_DIR}/qbs.png
-     DESTINATION ${QBS_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+     DESTINATION ${QBS_BINARY_DIR}/${CMAKE_BUILD_TYPE}
+  )
 else()
   file(COPY ${QBS_SOURCE_DIR}/qbs.png
-     DESTINATION ${QBS_BINARY_DIR)
+     DESTINATION ${QBS_BINARY_DIR}
+  )
 endif()
 
 target_link_libraries(${TARGET} PRIVATE 
