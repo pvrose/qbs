@@ -27,16 +27,16 @@ public:
 
     QBS_window* win_;
     QBS_data* data_;
-    string date_;
+    std::string date_;
 
-    string current_;
-    string next_;
-    string head_;
+    std::string current_;
+    std::string next_;
+    std::string head_;
 
 protected:
 
     // callsign for "Receive QSL" and "Receive SASEs"
-    string callsign_;
+    std::string callsign_;
     // Number of cards or envelopes received
     int num_received_;
 

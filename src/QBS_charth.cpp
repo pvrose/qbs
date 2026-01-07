@@ -56,7 +56,7 @@ void QBS_charth::data(QBS_data* d) {
 	data_ = d;
 }
 
-void QBS_charth::update(string call) {
+void QBS_charth::update(std::string call) {
 	call_ = call;
 	stop_box_= data_->get_current();
 	start_box_ = stop_box_ > 11 ? stop_box_ - 11 : 0;
@@ -87,8 +87,8 @@ void QBS_charth::draw_chart() {
 	char err_msg[64];
 
 	for (int b = start_box_, ix = 0; b <= stop_box_; b++, ix++, count++) {
-		string box_name = data_->get_batch(b);
-		string label = "";
+		std::string box_name = data_->get_batch(b);
+		std::string label = "";
 		if (box_name.substr(5, 2) == "Q1") {
 			label = box_name.substr(2, 2);
 		}
@@ -102,7 +102,7 @@ void QBS_charth::draw_chart() {
 				clog << err_msg;
 				rcvd = 0;
 			}
-			max_ = max(max_, rcvd);
+			max_ = std::max(max_, rcvd);
 			average_ += rcvd;
 		}
 		chart_counts_[ix] = rcvd;
@@ -131,7 +131,7 @@ void QBS_charth::draw_chart() {
 		}
 		ix++;
 		chart_counts_[ix] = rcyc;
-		max_ = max(max_, rcyc);
+		max_ = std::max(max_, rcyc);
 		chart_->add((double)(rcyc), "", COLOUR_RECYCLED);
 
 		ix++;
@@ -278,7 +278,7 @@ void QBS_charth::chart_tip() {
 	int rcyc = chart_counts_[bar * 4 + 1];
 	int sent = chart_counts_[bar * 4 + 2];
 	int i_box = start_box_ + bar;
-	string id = data_->get_box(i_box)->id;
+	std::string id = data_->get_box(i_box)->id;
 
 	// Create text for tooltip
 	char text[256];

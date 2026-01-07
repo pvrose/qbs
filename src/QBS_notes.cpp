@@ -20,7 +20,7 @@ QBS_notes::~QBS_notes() {
     // inherited from Fl_Table
 void QBS_notes::draw_cell(TableContext context, int R, int C, int X, int Y, int W, int H) 
 {
-	string text;
+	std::string text;
  
 	switch (context) {
 
@@ -101,13 +101,13 @@ void QBS_notes::draw_cell(TableContext context, int R, int C, int X, int Y, int 
 
 void QBS_notes::set_data(void* data) {
     data_ = data;
-    vector<note_data>* this_data = (vector<note_data>*)data_;
+    std::vector<note_data>* this_data = (std::vector<note_data>*)data_;
     rows((int)this_data->size());
     row_height_all(FL_NORMAL_SIZE + 2);
     int colw[3] = {25, 25, 25};
     for (int c = 0; c < 3; c++) {
         for (auto it = this_data->begin(); it != this_data->end(); it++) {
-            string text;
+            std::string text;
             int w = 0;
             int h = 0;
             switch (c) {
@@ -116,7 +116,7 @@ void QBS_notes::set_data(void* data) {
                 case 2: text = (*it).value; break;
             }
             fl_measure(text.c_str(), w, h);
-            colw[c] = max(colw[c], w);
+            colw[c] = std::max(colw[c], w);
        }
        col_width(c, colw[c] + 5);
     }

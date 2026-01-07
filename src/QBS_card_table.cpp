@@ -68,7 +68,7 @@ void QBS_card_table::draw_cell(TableContext context, int R, int C, int X, int Y,
 }
 
 // Set the callsign
-void QBS_card_table::call(string call) {
+void QBS_card_table::call(std::string call) {
     call_ = call;
     redraw();
 }

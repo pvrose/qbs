@@ -16,7 +16,7 @@ const char* VERSION = "2.0.2";
 
 QBS_window* window_;
 
-void create_window(string filename) {
+void create_window(std::string filename) {
 	char title[100];
 	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", VERSION, __DATE__);
 	window_ = new QBS_window(400, 400, title, filename.c_str());
@@ -34,10 +34,10 @@ int main(int argc, char** argv)
 		// else look in
 #ifdef _WIN32
 		// C:\ProgramData\GM3ZZA\QBS
-		string icon_file = std::string(getenv("ProgramData")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
+		std::string icon_file = std::string(getenv("ProgramData")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
 #else
 		// /etc/GM3ZZA/QBS
-		string icon_file = "/etc/" + VENDOR + "/" + PROGRAM_ID + "/qbs.png";
+		std::string icon_file = "/etc/" + VENDOR + "/" + PROGRAM_ID + "/qbs.png";
 #endif
 		delete icon;
 		icon = new Fl_PNG_Image(icon_file.c_str());
@@ -45,8 +45,8 @@ int main(int argc, char** argv)
 	Fl_Window::default_icon(icon);
 
 	// Get filename - use argument if set
-	string filename = "";
-	if (argc > 1) filename = string(argv[argc - 1]);
+	std::string filename = "";
+	if (argc > 1) filename = std::string(argv[argc - 1]);
 	// Create the window
 	create_window(filename);
 	window_->show(argc, argv);

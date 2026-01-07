@@ -37,7 +37,7 @@ void QBS_breport::box(int b) {
 	auto its = box_data->sent->begin();
 	// cycle through the three sets of counts in step
 	while (itc != box_data->counts->end() || itr != box_data->received->end() || its != box_data->sent->end()) {
-		string call, callc, callr, calls;
+		std::string call, callc, callr, calls;
 		if (itc != box_data->counts->end()) {
 			callc = itc->first;
 			call = callc;
@@ -122,7 +122,7 @@ void QBS_breport::draw_cell(TableContext context, int R, int C, int X, int Y, in
 		fl_push_clip(X, Y, W, H);
 		fl_rectf(X, Y, W, H, FL_BACKGROUND_COLOR);
 		fl_rect(X, Y, W, H, FL_FOREGROUND_COLOR);
-		string call = counts_[R]->callsign;
+		std::string call = counts_[R]->callsign;
 		int received = counts_[R]->received;
 		int recycled = counts_[R]->recycled;
 		int sent = counts_[R]->sent;

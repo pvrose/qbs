@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+#include <FL/fl_ask.H>
 #include <FL/Fl_Preferences.H>
 #include <FL/Fl_Wizard.H>
 
@@ -150,12 +151,12 @@ bool QBS_window::read_qbs() {
 }
 
 // Open batch log
-void QBS_window::open_batch_log(string batch_name) {
+void QBS_window::open_batch_log(std::string batch_name) {
 	if (blog_file_ != nullptr) {
 		blog_file_->close();
 		delete blog_file_;
 	}
-	string name = csv_directory_ + "/" + batch_name + ".log";
+	std::string name = csv_directory_ + "/" + batch_name + ".log";
 	cout << "Opening " << name << endl;
 	blog_file_ = new ofstream(name.c_str(), ios::out | ios::app);
 }
@@ -170,7 +171,7 @@ void QBS_window::append_batch_log(const char* text) {
 // Populate call choice with extant callsigns
 void QBS_window::populate_call_choice(input_hierch* ch) {
 	ch->clear();
-	string call = data_->get_first_call(RCVD_ALL);
+	std::string call = data_->get_first_call(RCVD_ALL);
 	while (call.length()) {
 		ch->add(call.c_str());
 		call = data_->get_next_call(RCVD_ALL, call);

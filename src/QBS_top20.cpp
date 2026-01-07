@@ -59,11 +59,11 @@ void QBS_top20::draw_cell(TableContext context, int R, int C, int X, int Y,	int 
 		box_data* box_data = data_->get_box(box_);
 		recycle_data* info = box_data->recycle_info;
 		fl_rect(X, Y, W, H, FL_FOREGROUND_COLOR);
-		string call = top20_[R];
+		std::string call = top20_[R];
 		int count = (*box_data->counts)[call];
 		int prev_count = R > 0 ? (*box_data->counts)[top20_[R - 1]] : 0;
 		int pc = info->sum_recycled ? 100 * count / info->sum_recycled : 0;
-		string rank = (count == prev_count) ? "=" : to_string(R + 1);
+		std::string rank = (count == prev_count) ? "=" : std::to_string(R + 1);
 		char temp[10];
 
 		switch (C) {
@@ -94,7 +94,7 @@ void QBS_top20::box(int b) {
 	box_ = b;
 	box_data* box_data = data_->get_box(box_);
 	recycle_data* info = box_data->recycle_info;
-	list<string> top20 = info->top_20;
+	std::list<std::string> top20 = info->top_20;
 	top20_.clear();
 	// Re-oredr top20 as a vector for processing in draw_cell
 	bool done = false;

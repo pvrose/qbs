@@ -5,8 +5,6 @@
 
 #include <FL/Fl_Table.H>
 
-using namespace std;
-
 class QBS_data;
 
 class QBS_top20 :
@@ -30,7 +28,7 @@ protected:
 
     QBS_data* data_;
 
-    vector<string> top20_;
+    std::vector<std::string> top20_;
 
 };
 

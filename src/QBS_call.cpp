@@ -11,6 +11,7 @@
 #include <FL/fl_ask.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Int_Input.H>
+#include <FL/Fl_Light_Button.H>
 
 extern const char* DATE_FORMAT;
 
@@ -51,21 +52,21 @@ void QBS_call::create_form() {
 	ip_call_->value(call_.c_str());
 
 	cy += HBUTTON + GAP;
-	maxx = max(maxx, cx + ip_call_->w());
+	maxx = std::max(maxx, cx + ip_call_->w());
 
 	tb_holding_ = new QBS_card_table(cx, cy, WSMEDIT, 7 * HBUTTON, "Holding:");
 	tb_holding_->align(FL_ALIGN_LEFT | FL_ALIGN_CENTER);
 	tb_holding_->tooltip("Displays the current state of the boxes");
 
 	cy += tb_holding_->h() + GAP;
-	maxx = max(maxx, cx + tb_holding_->w());
+	maxx = std::max(maxx, cx + tb_holding_->w());
 
 	ch_history_ = new QBS_charth(cx, cy, 160, 100, "History:");
 	ch_history_->align(FL_ALIGN_LEFT | FL_ALIGN_CENTER);
 	ch_history_->tooltip("Displays the recent history of cards for this callsign");
 	ch_history_->data(data_);
 
-	maxx = max(maxx, cx + ch_history_->w());
+	maxx = std::max(maxx, cx + ch_history_->w());
 
 	int gw = 0;
 	int gh = 0;
@@ -78,7 +79,7 @@ void QBS_call::create_form() {
 	ip_add_qty_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "Add");
 	ip_add_qty_->align(FL_ALIGN_LEFT);
 	ip_add_qty_->callback(cb_value_int<Fl_Int_Input>, &add_qty_);
-	ip_add_qty_->value(to_string(add_qty_).c_str());
+	ip_add_qty_->value(std::to_string(add_qty_).c_str());
 	ip_add_qty_->tooltip("Enter the number of cards or SASEs received");
 
 	cx += WBUTTON;
@@ -100,7 +101,7 @@ void QBS_call::create_form() {
 	ip_stuff_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "Stuff");
 	ip_stuff_->align(FL_ALIGN_LEFT);
 	ip_stuff_->callback(cb_value_int<Fl_Int_Input>, &stuff_qty_);
-	ip_stuff_->value(to_string(stuff_qty_).c_str());
+	ip_stuff_->value(std::to_string(stuff_qty_).c_str());
 	ip_stuff_->tooltip("Enter the number of cards being put in SASEs for posting");
 
 	maxx = cx + WBUTTON;
@@ -114,19 +115,19 @@ void QBS_call::create_form() {
 	ip_keep_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON);
 	ip_keep_->align(FL_ALIGN_LEFT);
 	ip_keep_->callback(cb_value_int<Fl_Int_Input>, &keep_qty_);
-	ip_keep_->value(to_string(keep_qty_).c_str());
+	ip_keep_->value(std::to_string(keep_qty_).c_str());
 	ip_keep_->tooltip("Enter the number of cards being put in SASEs for next time");
 
-	maxx = max(maxx, cx + WBUTTON);
+	maxx = std::max(maxx, cx + WBUTTON);
 	cy += HBUTTON + GAP;
 
 	ip_sases_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "SASEs");
 	ip_sases_->align(FL_ALIGN_LEFT);
 	ip_sases_->callback(cb_value_int<Fl_Int_Input>, &sases_qty_);
-	ip_sases_->value(to_string(sases_qty_).c_str());
+	ip_sases_->value(std::to_string(sases_qty_).c_str());
 	ip_sases_->tooltip("Enter the number of SASEs for posting");
 
-	maxx = max(maxx, cx + WBUTTON);
+	maxx = std::max(maxx, cx + WBUTTON);
 	cy += HBUTTON;
 
 	gw = maxx - gp_process_->x();
@@ -156,9 +157,9 @@ void QBS_call::create_form() {
 void QBS_call::enable_widgets() {
 	// Set the label
 	int last_box = data_->get_current();
-	string last_batch = data_->get_batch(last_box);
+	std::string last_batch = data_->get_batch(last_box);
 	int head_box = data_->get_head();
-	string head_batch = data_->get_batch(head_box);
+	std::string head_batch = data_->get_batch(head_box);
 	char l[128];
 	switch (data_->mode()) {
 	case process_mode_t::LOG_CARD:
@@ -185,13 +186,13 @@ void QBS_call::enable_widgets() {
 	switch (data_->mode()) {
 	case process_mode_t::LOG_CARD:
 	case process_mode_t::LOG_SASE:
-		ip_add_qty_->value(to_string(add_qty_).c_str());
+		ip_add_qty_->value(std::to_string(add_qty_).c_str());
 		gp_add_item_->show();
 		gp_process_->hide();
 		bn_done_->deactivate();
 		break;
 	case process_mode_t::SORTING:
-		ip_add_qty_->value(to_string(add_qty_).c_str());
+		ip_add_qty_->value(std::to_string(add_qty_).c_str());
 		gp_add_item_->show();
 		gp_process_->hide();
 		bn_done_->activate();
@@ -212,9 +213,9 @@ void QBS_call::enable_widgets() {
 			keep_qty_ = 0;
 		}
 		if (stuff_qty_ > 0) sases_qty_ = 1;
-		ip_stuff_->value(to_string(stuff_qty_).c_str());
-		ip_keep_->value(to_string(keep_qty_).c_str());
-		ip_sases_->value(to_string(sases_qty_).c_str());
+		ip_stuff_->value(std::to_string(stuff_qty_).c_str());
+		ip_keep_->value(std::to_string(keep_qty_).c_str());
+		ip_sases_->value(std::to_string(sases_qty_).c_str());
 		gp_process_->show();
 		bn_done_->activate();
 		break;
@@ -275,8 +276,8 @@ void QBS_call::cb_done(Fl_Widget* w, void* v) {
 }
 
 void QBS_call::cb_call(Fl_Widget* w, void* v) {
-	cb_value<Fl_Input, string>(w, v);
-	string* s = (string*)v;
+	cb_value<Fl_Input, std::string>(w, v);
+	std::string* s = (std::string*)v;
 	(*s) = to_upper(*s);
 	((Fl_Input*)w)->value(s->c_str());
 	QBS_call* that = ancestor_view<QBS_call>(w);

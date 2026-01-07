@@ -43,9 +43,9 @@ bool QBS_import::load_data(QBS_data* data, const char* directory) {
 }
 
 bool QBS_import::read_batches() {
-	string filename = directory_ + "\\batches.csv";
+	std::string filename = directory_ + "\\batches.csv";
 	clog << "Reading.. " << filename << endl;
-	string line;
+	std::string line;
 	int count = 0;
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
@@ -67,18 +67,18 @@ bool QBS_import::read_batches() {
 }
 
 // Read the batches data - store in the holding arrays
-bool QBS_import::read_batch(int box, string line) {
-	vector<string> values;
+bool QBS_import::read_batch(int box, std::string line) {
+	std::vector<std::string> values;
 	split_line(line, values, ',');
 	// Check col 0 is a valid batch name
 	if (values[0].substr(0, 2) == "20") {
-		string batch = values[0];
+		std::string batch = values[0];
 		clog << batch << '\r';
 		batch_names_[box] = batch;
 		boxes_[batch] = box;
 		for (unsigned int col = 1; col < values.size() && col < columns_.size(); col++) {
-			string& val = values[col];
-			string column = to_upper(columns_[col]);
+			std::string& val = values[col];
+			std::string column = to_upper(columns_[col]);
 			// Received date
 			if (column == "RECEIVED" && val.length() > 0) {
 				event_t event = { batch, RECEIVED };
@@ -121,9 +121,9 @@ bool QBS_import::read_batch(int box, string line) {
 
 // Read card data
 bool QBS_import::read_card_data() {
-	string filename = directory_ + "\\cards.csv";
+	std::string filename = directory_ + "\\cards.csv";
 	clog << "Reading.. " << filename << endl;
-	string line;
+	std::string line;
 	int count = 0;
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
@@ -145,9 +145,9 @@ bool QBS_import::read_card_data() {
 
 // Read SASE data
 bool QBS_import::read_sase_data() {
-	string filename = directory_ + "\\sases.csv";
+	std::string filename = directory_ + "\\sases.csv";
 	clog << "Reading.. " << filename << endl;
-	string line;
+	std::string line;
 	int count = 0;
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
@@ -168,27 +168,27 @@ bool QBS_import::read_sase_data() {
 };
 
 // Read a line of the card or SASE files
-bool QBS_import::read_call(bool card, string line) {
-	vector<string> values;
+bool QBS_import::read_call(bool card, std::string line) {
+	std::vector<std::string> values;
 	split_line(line, values, ',');
 	// values[0] is callsign
 	if (values[0][0] == 'G') {
-		string call = values[0];
+		std::string call = values[0];
 		clog << call << "              " << '\r';
 		if (call.length() > 6) clog << endl;
 		notes& notes = calls_[call];
-		string date = now(true, DATE_FORMAT) + "(E)";
+		std::string date = now(true, DATE_FORMAT) + "(E)";
 		for (unsigned int ix = 1; ix != values.size() && ix < columns_.size(); ix++) {
-			string column = to_upper(columns_[ix]);
-			string& value = values[ix];
-			map<string, vector<int>>& row = card ? card_matrix_[call] : sase_matrix_[call];
+			std::string column = to_upper(columns_[ix]);
+			std::string& value = values[ix];
+			std::map<std::string, std::vector<int>>& row = card ? card_matrix_[call] : sase_matrix_[call];
 			// read the call information
 			if (column[0] != '2') {
 				note_data note = { date, column, value };
 				if (value.length() > 0)	notes.push_back(note);
 			}
 			else if (column.length() > 8) {
-				string batch = column.substr(0, 7);
+				std::string batch = column.substr(0, 7);
 				row[batch].resize(5);
 				direction_t dirn = DIRN_INVALID;
 				int count;
@@ -224,8 +224,8 @@ bool QBS_import::read_call(bool card, string line) {
 // Get the count value at specific point
 int QBS_import::count (
 	bool card, 
-	string call, 
-	string batch, 
+	std::string call, 
+	std::string batch, 
 	QBS_import::direction_t dirn) {
 	auto it = card ? card_matrix_.find(call) : sase_matrix_.find(call);
 	auto it_end = card ? card_matrix_.end() : sase_matrix_.end();
@@ -245,8 +245,8 @@ bool QBS_import::copy_data() {
 	clog << "Copying data...." << endl;
 	for (auto d = dates_.begin(); d != dates_.end(); d++) {
 		event_t& event = (*d).second;
-		const string& date = (*d).first + "(E)";
-		string batch = event.batch;
+		const std::string& date = (*d).first + "(E)";
+		std::string batch = event.batch;
 		int box = boxes_[batch];
 		direction_t dirn = event.in_out;
 		float weight = batch_weights_[batch];
@@ -262,7 +262,7 @@ bool QBS_import::copy_data() {
 				break;
 			case 1:
 				for (auto it = calls_.begin(); it != calls_.end(); it++) {
-					const string& call = (*it).first;
+					const std::string& call = (*it).first;
 					value = count(true, call, batch_names_[0], RECYCLED);
 					if (value != 0) {
 						data_->discard_inherits(date, call, value);
@@ -294,7 +294,7 @@ bool QBS_import::copy_data() {
 			default:
 				// Card processing
 				for (auto it = calls_.begin(); it != calls_.end(); it++) {
-					const string& call = (*it).first;
+					const std::string& call = (*it).first;
 					// Move IN_BOX, KEEP_BOX and received cards to current box
 					value = count(true, call, batch, RECEIVED);
 					data_->receive_cards(box, date, call, value);
@@ -340,7 +340,7 @@ bool QBS_import::copy_data() {
 		}
 	}
 	for (auto it = calls_.begin(); it != calls_.end(); it++) {
-		string call = (*it).first;
+		std::string call = (*it).first;
 		for (auto it_i = (*it).second.begin(); it_i != (*it).second.end(); it_i++) {
 			data_->ham_data((*it_i).date, call, (*it_i).name, (*it_i).value);
 		}

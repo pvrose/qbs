@@ -11,7 +11,6 @@
 
 #include "FL/Fl_Single_Window.H"
 
-using namespace std;
 
 // SEverity level used for message
 enum severity_t {
@@ -49,7 +48,7 @@ public:
     void filename(const char* value);
     void directory(const char* value);
     // Open batch log
-    void open_batch_log(string batch_name);
+    void open_batch_log(std::string batch_name);
 
      // Populate call choice with extant callsigns
     // TODO implement it in QBS_window.cpp
@@ -76,15 +75,15 @@ public:
     //Fl_Preferences settings_;
     QBS_data* data_;
     // Batch log
-    ofstream* blog_file_;
+    std::ofstream* blog_file_;
     // CSV file directory
-    string csv_directory_;
+    std::string csv_directory_;
     // QBS filename
-    string qbs_filename_;
+    std::string qbs_filename_;
     // Selected box number
     int selected_box_;
     // Current callsign
-    string call_;   
+    std::string call_;   
 
 protected:
 
@@ -95,7 +94,7 @@ protected:
     QBS_batch* g_batch_;
 
     // The groups within the wizard that perform specific acts (hence spells).
-    map<process_mode_t, Fl_Group*> spells_;
+    std::map<process_mode_t, Fl_Group*> spells_;
 
     // Reading - ignore update_action
     bool reading_;

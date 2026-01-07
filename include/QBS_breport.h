@@ -7,8 +7,6 @@
 
 class QBS_data;
 
-using namespace std;
-
 class QBS_breport :
     public Fl_Table
 {
@@ -30,12 +28,12 @@ protected:
     QBS_data* data_;
 
     struct count_data {
-        string callsign;
+        std::string callsign;
         int received{ 0 };
         int sent{ 0 };
         int recycled{ 0 };
     };
      
-    vector<count_data*> counts_;
+    std::vector<count_data*> counts_;
 };
 

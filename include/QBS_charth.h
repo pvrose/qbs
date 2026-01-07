@@ -7,8 +7,6 @@
 #include <FL/Fl_Chart.H>
 #include <FL/Fl_Scrollbar.H>
 
-using namespace std;
-
 class QBS_data;
 
 class QBS_charth :
@@ -23,7 +21,7 @@ public:
 
     void data(QBS_data* d);
 
-    void update(string call);
+    void update(std::string call);
 
     virtual void draw();
 
@@ -60,9 +58,9 @@ protected:
     int head_box_;
     int stop_box_;
 
-    string call_;
+    std::string call_;
     
-    vector<int> chart_counts_;
+    std::vector<int> chart_counts_;
 
 };
 

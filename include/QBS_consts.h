@@ -4,13 +4,10 @@
 
 #include <string>
 
-using namespace std;
-//using namespace zzalib;
-
-const string COPYRIGHT = "© Philip Rose GM3ZZA 2022";
-const string PROGRAM_ID = "QBS";
-const string PROG_ID = "QBS";
-const string VENDOR = "GM3ZZA";
+const std::string COPYRIGHT = "© Philip Rose GM3ZZA 2022";
+const std::string PROGRAM_ID = "QBS";
+const std::string PROG_ID = "QBS";
+const std::string VENDOR = "GM3ZZA";
 
 // Tip window dimensions
 const unsigned int TIP_WIDTH = 200;

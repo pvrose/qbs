@@ -5,8 +5,6 @@
 
 #include <FL/Fl_Table.H>
 
-using namespace std;
-
 class QBS_data;
 class QBS_window;
 
@@ -22,7 +20,7 @@ public:
         int W = 0, int H = 0);
 
     // Set the callsign
-    void call(string call);
+    void call(std::string call);
 
     // Redraw the table - size of data may have changed
     virtual void draw();
@@ -32,12 +30,12 @@ protected:
     // Get the number of rows
     int num_rows();
 
-    string call_;
+    std::string call_;
     QBS_data* data_;
     QBS_window* win_;
 
     // Map of table row to box number
-    vector<int> boxes_;
+    std::vector<int> boxes_;
 
 };
 

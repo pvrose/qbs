@@ -46,8 +46,8 @@ bool QBS_data::close_qbs() {
 
 // Inherit cards to current box
 int QBS_data::discard_inherits(
-	string date,                // date received
-	string call,                // callsign
+	std::string date,                // date received
+	std::string call,                // callsign
 	int value                   // num of cards
 ) {
 	tail_ = 0;
@@ -62,8 +62,8 @@ int QBS_data::discard_inherits(
 // Receive cards to either inbox or current box
 int QBS_data::receive_cards(
 	int box_num,                // box number
-	string date,                // date received
-	string call,                // callsign
+	std::string date,                // date received
+	std::string call,                // callsign
 	int value                   // num of cards
 ) {
 	received_box_[call] += value;
@@ -115,8 +115,8 @@ int QBS_data::receive_cards(
 // Create a new box for batch being received
 int QBS_data::new_batch(
 	int box_num,                // box number
-	string date,                // date created
-	string batch                // batch "name" - e.g. "2022 Q4"
+	std::string date,                // date created
+	std::string batch                // batch "name" - e.g. "2022 Q4"
 ) {
 	//action_read_ = NEW_BATCH;
 	// Check if box number is valid
@@ -144,8 +144,8 @@ int QBS_data::new_batch(
 
 // Receive or delete envelopes
 int QBS_data::receive_sases(
-	string date,                // date actioned
-	string call,                // callsign
+	std::string date,                // date actioned
+	std::string call,                // callsign
 	int value                   // num of envelopes
 ) {
 	if (value < 0) {
@@ -183,8 +183,8 @@ int QBS_data::receive_sases(
 // Send cards in envelopes
 int QBS_data::stuff_cards(
 	int box_num,                // box number
-	string date,                // date actioned
-	string call,                // callsign
+	std::string date,                // date actioned
+	std::string call,                // callsign
 	int value                   // num of cards
 ) {
 	// Process valid boxes
@@ -258,8 +258,8 @@ int QBS_data::stuff_cards(
 
 // Use envelopes
 int QBS_data::use_sases(
-	string date,                // date actioned
-	string call,                // callsign
+	std::string date,                // date actioned
+	std::string call,                // callsign
 	int value                   // Number of envelopes
 ) {
 	// Check SASEs
@@ -283,8 +283,8 @@ int QBS_data::use_sases(
 // Keep box - transfer cards from current box to keep box
 int QBS_data::keep_cards(
 	int box_num,                // box number
-	string date,                // date actioned
-	string call,                // callsign
+	std::string date,                // date actioned
+	std::string call,                // callsign
 	int value                   // num of cards
 ) {
 	if (box_num != boxes_.size() - 1) {
@@ -323,7 +323,7 @@ int QBS_data::keep_cards(
 
 // Post box - transfer cards and envelopes from out-tray to pillar box
 int QBS_data::post_cards(
-	string date                 // date actioned
+	std::string date                 // date actioned
 ) {
 	//action_read_ = POST_CARDS;
 	int box_num = (int)boxes_.size() - 1;
@@ -341,7 +341,7 @@ int QBS_data::post_cards(
 
 // Dispose box - convert current box into a disposal box, add it to the queue
 int QBS_data::dispose_cards(
-	string date                 // date actioned
+	std::string date                 // date actioned
 ) {
 	//action_read_ = DISPOSE_CARDS;
 	// window_->update_actions();
@@ -367,7 +367,7 @@ int QBS_data::dispose_cards(
 
 // Recycle box - transfer cards from head of disposal queue to blue bin
 int QBS_data::recycle_cards(
-	string date,                // date actioned
+	std::string date,                // date actioned
 	float weight                // weight of cards
 ) {
 	//action_read_ = RECYCLE_CARDS;
@@ -395,7 +395,7 @@ int QBS_data::recycle_cards(
 // Totalise box - call after box first read in
 int QBS_data::totalise_cards(
 	int box_num,
-	string date
+	std::string date
 ) {
 	box_data& box = *boxes_[box_num];
 
@@ -407,8 +407,8 @@ int QBS_data::totalise_cards(
 // Adjust box 
 int QBS_data::adjust_cards(
 	int box_num,
-	string date,
-	string call,
+	std::string date,
+	std::string call,
 	int delta
 ) {
 	switch (box_num) {
@@ -444,10 +444,10 @@ int QBS_data::adjust_cards(
 
 // Set ham-data
 int QBS_data::ham_data(
-	string date,
-	string call,
-	string name,
-	string value )
+	std::string date,
+	std::string call,
+	std::string name,
+	std::string value )
 {
 	note_data note = { date, name, value };
 	ham_info_[call].push_back(note);
@@ -456,7 +456,7 @@ int QBS_data::ham_data(
 }
 
 // Get count for specific box/call - NB floating point as some "Boxes" represent averages
-int QBS_data::get_count(int box_num, string call) {
+int QBS_data::get_count(int box_num, std::string call) {
 	switch (box_num) {
 	case IN_BOX:
 		if (in_box_.find(call) == in_box_.end()) {
@@ -551,7 +551,7 @@ int QBS_data::get_head() {
 }
 
 // Get batch name for box_number
-string QBS_data::get_batch(int box_num) {
+std::string QBS_data::get_batch(int box_num) {
 	if (box_num < 0) {
 		switch (box_num) {
 		case IN_BOX: return "In-box";
@@ -595,7 +595,7 @@ count_data* QBS_data::get_count_data(int box_num) {
 // Get call in box - - return next one after this
 // box_num invalid - return ""
 // last call supplied - return ""
-string QBS_data::get_next_call(int box_num, string call) {
+std::string QBS_data::get_next_call(int box_num, std::string call) {
 	count_data* calls = get_count_data(box_num);;
 	if (calls == nullptr || calls->size() == 0) {
 		return "";
@@ -619,7 +619,7 @@ string QBS_data::get_next_call(int box_num, string call) {
 // Get call in box - - return previous 1 to this
 // box_num invalid - return ""
 // last call supplied - return ""
-string QBS_data::get_prev_call(int box_num, string call) {
+std::string QBS_data::get_prev_call(int box_num, std::string call) {
 	count_data* calls = get_count_data(box_num);
 	if (calls == nullptr || calls->size() == 0) {
 		return call;
@@ -636,7 +636,7 @@ string QBS_data::get_prev_call(int box_num, string call) {
 };
 
 // Return the first callsign in the box
-string QBS_data::get_first_call(int box_num) {
+std::string QBS_data::get_first_call(int box_num) {
 	count_data* calls = get_count_data(box_num);
 	if (calls == nullptr || calls->size() == 0) {
 		return "";
@@ -651,7 +651,7 @@ string QBS_data::get_first_call(int box_num) {
 }
 
 // Return the last callsign in the box
-string QBS_data::get_last_call(int box_num) {
+std::string QBS_data::get_last_call(int box_num) {
 	count_data* calls = get_count_data(box_num);
 	if (calls == nullptr || calls->size() == 0) {
 		return "";
@@ -681,7 +681,7 @@ recycle_data& QBS_data::get_recycle_data(int box_num) {
 }
 
 // Get note data for a particular callsign
-notes* QBS_data::get_notes(string callsign) {
+notes* QBS_data::get_notes(std::string callsign) {
 	return &ham_info_[callsign];
 }
 
@@ -693,7 +693,7 @@ void QBS_data::set_window(QBS_window* w) {
 
 // Load CSV files
 // return true if load successful
-bool QBS_data::import_cvs(string& directory) {
+bool QBS_data::import_cvs(std::string& directory) {
 	reading_mode_ = IMPORT;
 	clog << "Importing CSV files from " << directory << endl;
 	bool result = false;
@@ -710,7 +710,7 @@ bool QBS_data::import_cvs(string& directory) {
 }
 
 // Open file for writing
-bool QBS_data::wopen_qbs(string& filename) {
+bool QBS_data::wopen_qbs(std::string& filename) {
 	bool ok = true;
 	clog << "Opening file for writing...." << endl;
 	if (filename.length() == 0) {
@@ -719,8 +719,8 @@ bool QBS_data::wopen_qbs(string& filename) {
 		chooser->title("Please select file for saving");
 		chooser->filter("QBS files\t*.{qbs,txt}");
 		size_t pos = filename.find_last_of("/\\");
-		if (pos != string::npos) {
-			string dir_name = filename.substr(0, pos + 1);
+		if (pos != std::string::npos) {
+			std::string dir_name = filename.substr(0, pos + 1);
 			chooser->directory(dir_name.c_str());
 			chooser->preset_file(filename.substr(pos + 1).c_str());
 		}
@@ -729,7 +729,7 @@ bool QBS_data::wopen_qbs(string& filename) {
 		}
 		switch (chooser->show()) {
 		case 0:
-			filename = string(chooser->filename());
+			filename = std::string(chooser->filename());
 			break;
 		default:
 			cerr << "Error selecting file" << endl;
@@ -752,21 +752,21 @@ bool QBS_data::wopen_qbs(string& filename) {
 	return ok;
 }
 
-bool QBS_data::read_qbs(string& filename) {
+bool QBS_data::read_qbs(std::string& filename) {
 	// Turn off logging as 
 	reading_mode_ = READING;
 	int box;
-	string date;
-	string call;
-	string batch;
+	std::string date;
+	std::string call;
+	std::string batch;
 	int value;
 	float f_value;
 	command_t command;
 	int check;
-	string line;
-	vector<string> words;
-	string i_name;
-	string i_value;
+	std::string line;
+	std::vector<std::string> words;
+	std::string i_name;
+	std::string i_value;
 	bool do_check = true;
 	int line_num = 0;
 
@@ -921,8 +921,8 @@ bool QBS_data::read_qbs(string& filename) {
 void QBS_data::log_action(
 	command_t command,
 	int box_num,
-	string date,
-	string id,
+	std::string date,
+	std::string id,
 	int i_value,
 	float f_value
 ) {
@@ -990,10 +990,10 @@ void QBS_data::log_action(
 
 void QBS_data::log_action(
 	command_t command,
-	string date,
-	string call,
-	string name,
-	string value
+	std::string date,
+	std::string call,
+	std::string name,
+	std::string value
 ) {
 	if (file_.good() && reading_mode_ != READING) {
 		switch (command) {
@@ -1014,11 +1014,11 @@ void QBS_data::log_action(
 void QBS_data::evaluate_top20(
 	int box_num) {
 	box_data* box = boxes_[box_num];
-	list<string>& top20 = box->recycle_info->top_20;
+	std::list<std::string>& top20 = box->recycle_info->top_20;
 	top20.clear();
 	// Go through the calls still in the box
 	for (auto count = box->counts->begin(); count != box->counts->end(); count++) {
-		const string& call = (*count).first;
+		const std::string& call = (*count).first;
 		const int& value = (*count).second;
 		bool inserted = false;
 		// Go through the top20 so far and insert the new value where it has 
@@ -1039,7 +1039,7 @@ void QBS_data::evaluate_top20(
 void QBS_data::box_summary(int box, ostream& os) {
 	count_data* counts = nullptr;
 	box_data* box_data;
-	string name;
+	std::string name;
 	switch (box) {
 	case KEEP_BOX:
 		counts = &keep_box_;
@@ -1057,7 +1057,7 @@ void QBS_data::box_summary(int box, ostream& os) {
 		if (box >= 0 && box < (signed)boxes_.size()) {
 			box_data = boxes_[box];
 			counts = box_data->counts;
-			name = "Box " + to_string(box);
+			name = "Box " + std::to_string(box);
 			if (box == boxes_.size() - 1) name += 'C';
 			if (box == tail_) name += 'T';
 			if (box == head_) name += 'H';
@@ -1104,8 +1104,8 @@ void QBS_data::trace_boxes(ostream& os) {
 }
 
 // Calculate the next batch
-string QBS_data::next_batch() {
-	string batch = get_batch(get_current());
+std::string QBS_data::next_batch() {
+	std::string batch = get_batch(get_current());
 	if (batch != "Invalid") {
 		// Parse the batch string - format "YYYY Qx" or "YYYY Xx"
 		// where x is the box number within the year
@@ -1124,7 +1124,7 @@ string QBS_data::next_batch() {
 		}
 		char temp[10];
 		snprintf(temp, 10, "%4d X%1d", year, box);
-		return string(temp);
+		return std::string(temp);
 	}
 	else {
 		return batch;

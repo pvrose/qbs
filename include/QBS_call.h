@@ -4,8 +4,6 @@
 
 #include <FL/Fl_Group.H>
 
-using namespace std;
-
 class QBS_card_table;
 class QBS_charth;
 class QBS_data;
@@ -61,7 +59,7 @@ protected:
 
     // Attributes
     // Callsign being processed
-    string call_;
+    std::string call_;
     // Number of cards/SASEs toadd
     int add_qty_;
     // Number of cards going to SASEs
@@ -71,7 +69,7 @@ protected:
     // Number of SASEs used
     int sases_qty_;
     // Current date
-    string date_;
+    std::string date_;
     // Populate for keepin
     bool do_keep_;
 

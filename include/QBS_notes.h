@@ -6,7 +6,6 @@
 
 #include <FL/Fl_Table.H>
 
-using namespace std;
 class QBS_data;
 
 class QBS_notes :

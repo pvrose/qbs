@@ -14,8 +14,6 @@
 
 #include "QBS_data.h"
 
-using namespace std;
-
 class QBS_import 
 {
 
@@ -37,14 +35,14 @@ protected:
     // Read SASE data
     bool read_sase_data();
     // Read single batch
-    bool read_batch(int box, string line);
-    bool read_call(bool card, string line);
+    bool read_batch(int box, std::string line);
+    bool read_call(bool card, std::string line);
 
     // Copy internal data to QBS_data
     bool copy_data();
 
     // Directory name
-    string directory_;
+    std::string directory_;
     // data
     QBS_data* data_;
 
@@ -59,32 +57,32 @@ protected:
         KEPT = 3,
         DIRN_INVALID
     };
-    map<string, map<string, vector< int > > >  card_matrix_;
-    map<string, map<string, vector< int > > >  sase_matrix_;
+    std::map<std::string, std::map<std::string, std::vector< int > > >  card_matrix_;
+    std::map<std::string, std::map<std::string, std::vector< int > > >  sase_matrix_;
     int count(
         bool card,
-        string call,
-        string batch,
+        std::string call,
+        std::string batch,
         direction_t dirn);
 
     // Holding batch data - 2D: data x batch + direction
     struct event_t {
-        string batch;
+        std::string batch;
         direction_t in_out{ RECEIVED };
     };
-    map <string, event_t > dates_;
+    std::map <std::string, event_t > dates_;
     // Map batch names to box number - initial batch is not a box (=-1)
-    map <string, int> boxes_;
-    map <int, string> batch_names_;
+    std::map <std::string, int> boxes_;
+    std::map <int, std::string> batch_names_;
     // Weight of cards recycled from each batch (including initial)
-    map <string, float> batch_weights_;
+    std::map <std::string, float> batch_weights_;
  
     // Holding call data
     call_info calls_;
 
     // File inputs
-    ifstream in_;
+    std::ifstream in_;
     // Current file headers
-    vector<string> columns_;
+    std::vector<std::string> columns_;
 };
 

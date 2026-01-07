@@ -26,7 +26,7 @@ void QBS_file::create_form() {
     curr_x += WLABEL;
     filename_input* ip_csv = new filename_input(curr_x, curr_y, WEDIT, HBUTTON, "CSV data");
     ip_csv->align(FL_ALIGN_LEFT);
-    ip_csv->callback(cb_value < Fl_Input, string>, &win_->csv_directory_);
+    ip_csv->callback(cb_value < Fl_Input, std::string>, &win_->csv_directory_);
     ip_csv->when(FL_WHEN_CHANGED);
     ip_csv->type(filename_input::DIRECTORY);
     ip_csv->value(win_->csv_directory_.c_str());
@@ -36,7 +36,7 @@ void QBS_file::create_form() {
     curr_y += HBUTTON + GAP;
     filename_input* ip_qbs = new filename_input(curr_x, curr_y, WEDIT, HBUTTON, "QBS data");
     ip_qbs->align(FL_ALIGN_LEFT);
-    ip_qbs->callback(cb_value<Fl_Input, string>, &win_->qbs_filename_);
+    ip_qbs->callback(cb_value<Fl_Input, std::string>, &win_->qbs_filename_);
     ip_qbs->when(FL_WHEN_CHANGED);
     ip_qbs->type(filename_input::FILE);
     ip_qbs->pattern("QBS files\t*.qbs");

@@ -6,9 +6,11 @@
 
 #include "utils.h"
 
+#include <FL/fl_ask.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Float_Input.H>
+#include <FL/Fl_Input_Choice.H>
 #include <FL/Fl_Output.H>
 
 extern const char* DATE_FORMAT;
@@ -92,7 +94,7 @@ void QBS_batch::create_form() {
 	op_held_calls_ = new Fl_Output(cx, cy, WBUTTON, HBUTTON);
 	op_held_calls_->tooltip("The number of calls in the cards being held");
 
-	my = max(my, cy + HBUTTON);
+	my = std::max(my, cy + HBUTTON);
 
 	cy = sy;
 	cx += WBUTTON;
@@ -115,7 +117,7 @@ void QBS_batch::create_form() {
 	op_held_cards_ = new Fl_Output(cx, cy, WBUTTON, HBUTTON);
 	op_held_cards_->tooltip("The number of cards being held");
 
-	my = max(my, cy + HBUTTON);
+	my = std::max(my, cy + HBUTTON);
 
 	cy = sy;
 	cx += WBUTTON;
@@ -175,7 +177,7 @@ void QBS_batch::create_form() {
 void QBS_batch::enable_widgets() {
 	// Set the label
 	if (box_ >= 0) {
-		string batch = data_->get_batch(box_);
+		std::string batch = data_->get_batch(box_);
 		char l[128];
 		switch (data_->mode()) {
 		case process_mode_t::POSTING:
@@ -341,8 +343,8 @@ void QBS_batch::execute_new() {
 		fl_message("Previous batch has not been marked for disposal!");
 		return;
 	}
-	string batch = data_->get_batch(box_);
-	string old_batch = data_->get_batch(box_ - 1);
+	std::string batch = data_->get_batch(box_);
+	std::string old_batch = data_->get_batch(box_ - 1);
 	char log_msg[128];
 	data_->new_batch(box_, date_, batch);
 	snprintf(log_msg, sizeof(log_msg), "Closing batch %s: %s\n", old_batch.c_str(), date_.c_str());

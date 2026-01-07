@@ -14,8 +14,6 @@ class Fl_Input_Choice;
 class Fl_Output;
 
 
-using namespace std;
-
 class QBS_batch :
     public Fl_Group
 {
@@ -72,7 +70,7 @@ protected:
     Fl_Button* bn_next_;
 
     float weight_;
-    string date_;
+    std::string date_;
     // The box number to be/have been processed
     int box_;
 
