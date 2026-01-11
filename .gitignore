@@ -13,3 +13,4 @@
 /.vs/qbs/v17/.wsuo
 /build
 /out
+/include/timestamp.h
