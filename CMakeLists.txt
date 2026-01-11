@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(QBS)
+project(QBS VERSION 2.0.3)
 
 set (TARGET qbs)
 set(CMAKE_CXX_STANDARD 17)
@@ -9,6 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(VENDOR "GM3ZZA")
 set(PROGRAMID "QBS")
+
+# Set timestamp and version into files (requires to be rebuilt to take effect)
+string(TIMESTAMP QBS_TIMESTAMP UTC)
+configure_file(
+  ${QBS_SOURCE_DIR}/include/timestamp.h.in
+  ${QBS_SOURCE_DIR}/include/timestamp.h
+  @ONLY
+)
 
 set(CPPFILES 
     ${QBS_SOURCE_DIR}/src/QBS_batch.cpp
@@ -65,7 +73,8 @@ endif()
 
 
 # Add ZZACOMMON
-add_subdirectory(../zzacommon ${CMAKE_BINARY_DIR}/zzacommon)
+set(ZZACOMMON_DOX ${ZZALOG_DOX})
+add_subdirectory(zzacommon)
 set(ZZACOMMON_INCLUDE_DIR ${ZZACOMMON_SOURCE_DIR}/include)
 
 set(SMAKE_BUILD_RPATH )

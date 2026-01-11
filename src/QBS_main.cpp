@@ -2,6 +2,8 @@
 #include "QBS_window.h"
 #include "QBS_consts.h"
 
+#include "timestamp.h"
+
 #include <string>
 
 #include <FL/Fl_Preferences.H>
@@ -11,14 +13,13 @@ using namespace std;
 
 const char* DATE_FORMAT = "%Y-%m-%d";
 extern int FL_NORMAL_SIZE;
-const char* VERSION = "2.0.2";
 
 
 QBS_window* window_;
 
 void create_window(std::string filename) {
 	char title[100];
-	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", VERSION, __DATE__);
+	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", VERSION_STRING.c_str(), TIMESTAMP.c_str());
 	window_ = new QBS_window(400, 400, title, filename.c_str());
 	printf("%s\n", title);
 }
