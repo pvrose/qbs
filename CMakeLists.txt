@@ -7,14 +7,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(VENDOR "GM3ZZA")
-set(PROGRAMID "QBS")
-
-# Set timestamp and version into files (requires to be rebuilt to take effect)
-string(TIMESTAMP QBS_TIMESTAMP UTC)
+set(APP_VENDOR "GM3ZZA")
+set(APP_NAME "QBS")
+string(TIMESTAMP APP_TIMESTAMP UTC)
+set(APP_VERSION "${QBS_VERSION}")
 configure_file(
-  ${QBS_SOURCE_DIR}/include/timestamp.h.in
-  ${QBS_SOURCE_DIR}/include/timestamp.h
+  ${QBS_SOURCE_DIR}/src/ident.cpp.in
+  ${QBS_SOURCE_DIR}/src/ident.cpp
   @ONLY
 )
 
@@ -33,6 +32,7 @@ set(CPPFILES
     ${QBS_SOURCE_DIR}/src/QBS_reporter.cpp
     ${QBS_SOURCE_DIR}/src/QBS_top20.cpp
     ${QBS_SOURCE_DIR}/src/QBS_window.cpp
+    ${QBS_SOURCE_DIR}/src/ident.cpp
 )
 
 # set document directory

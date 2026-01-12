@@ -2,7 +2,7 @@
 #include "QBS_window.h"
 #include "QBS_consts.h"
 
-#include "timestamp.h"
+#include "ident.h"
 
 #include <string>
 
@@ -19,7 +19,7 @@ QBS_window* window_;
 
 void create_window(std::string filename) {
 	char title[100];
-	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", VERSION_STRING.c_str(), TIMESTAMP.c_str());
+	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", APP_VERSION.c_str(), APP_TIMESTAMP.c_str());
 	window_ = new QBS_window(400, 400, title, filename.c_str());
 	printf("%s\n", title);
 }
@@ -35,10 +35,10 @@ int main(int argc, char** argv)
 		// else look in
 #ifdef _WIN32
 		// C:\ProgramData\GM3ZZA\QBS
-		std::string icon_file = std::string(getenv("ProgramData")) + "\\" + VENDOR + "\\" + PROGRAM_ID + "\\qbs.png";
+		std::string icon_file = std::string(getenv("ProgramData")) + "\\" + APP_VENDOR + "\\" + APP_NAME + "\\qbs.png";
 #else
 		// /etc/GM3ZZA/QBS
-		std::string icon_file = "/etc/" + VENDOR + "/" + PROGRAM_ID + "/qbs.png";
+		std::string icon_file = "/etc/" + APP_VENDOR + "/" + APP_NAME + "/qbs.png";
 #endif
 		delete icon;
 		icon = new Fl_PNG_Image(icon_file.c_str());

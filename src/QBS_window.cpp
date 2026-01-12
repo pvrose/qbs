@@ -5,6 +5,7 @@
 #include "QBS_call.h"
 #include "QBS_batch.h"
 #include "QBS_file.h"
+#include "ident.h"
 
 #include "callback.h"
 #include "input_hierch.h"
@@ -29,7 +30,7 @@ QBS_window::QBS_window(int W, int H, const char* L, const char* filename) :
 {
 	spells_.clear();
 
-	Fl_Preferences settings(Fl_Preferences::USER, VENDOR.c_str(), PROGRAM_ID.c_str());
+	Fl_Preferences settings(Fl_Preferences::USER, APP_VENDOR.c_str(), APP_NAME.c_str());
 
 		// Get CSV directory name from settings
 	char* temp;
@@ -75,7 +76,7 @@ void QBS_window::cb_close(Fl_Widget* w, void* v) {
 	
 	QBS_window* that = ancestor_view<QBS_window>(w);
 	that->data_->close_qbs();
-	Fl_Preferences settings(Fl_Preferences::USER, VENDOR.c_str(), PROGRAM_ID.c_str());
+	Fl_Preferences settings(Fl_Preferences::USER, APP_VENDOR.c_str(), APP_NAME.c_str());
 	settings.set("CSV Directory", that->csv_directory_.c_str());
 	settings.set("Filename", that->qbs_filename_.c_str());
 	settings.flush();
