@@ -11,11 +11,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+## Set program ident
 set(APP_VENDOR "GM3ZZA")
 set(APP_NAME "QBS")
 string(TIMESTAMP APP_TIMESTAMP UTC)
 set(APP_VERSION "${QBS_VERSION}")
+configure_file(
+  ${QBS_SOURCE_DIR}/src/ident.cpp.in
+  ${QBS_SOURCE_DIR}/src/ident.cpp
+  @ONLY
+)
 
+## Set source files
 set(CPPFILES 
     ${QBS_SOURCE_DIR}/src/QBS_batch.cpp
     ${QBS_SOURCE_DIR}/src/QBS_breport.cpp
@@ -31,6 +38,7 @@ set(CPPFILES
     ${QBS_SOURCE_DIR}/src/QBS_reporter.cpp
     ${QBS_SOURCE_DIR}/src/QBS_top20.cpp
     ${QBS_SOURCE_DIR}/src/QBS_window.cpp
+    ${QBS_SOURCE_DIR}/src/ident.cpp
 )
 
 # set document directory
