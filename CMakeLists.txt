@@ -5,7 +5,7 @@ project(QBS VERSION 2.0.3)
 ## Set target executable
 set (TARGET qbs)
 if (NOT MSVC)
-  set(BUILD_SHARED_LIBS ON)
+  set(BUILD_SHARED_LIBS OFF)
 endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
