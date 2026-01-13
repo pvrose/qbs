@@ -5,16 +5,15 @@
 #include "QBS_call.h"
 #include "QBS_batch.h"
 #include "QBS_file.h"
-#include "ident.h"
 
 #include "callback.h"
 #include "ident.h"
 #include "input_hierch.h"
+#include "settings.h"
 
 #include <iostream>
 
 #include <FL/fl_ask.H>
-#include <FL/Fl_Preferences.H>
 #include <FL/Fl_Wizard.H>
 
 using namespace std;
@@ -31,18 +30,13 @@ QBS_window::QBS_window(int W, int H, const char* L, const char* filename) :
 {
 	spells_.clear();
 
-	Fl_Preferences settings(Fl_Preferences::USER, APP_VENDOR.c_str(), APP_NAME.c_str());
+	settings top_settings;
 
 		// Get CSV directory name from settings
-	char* temp;
-	settings.get("CSV Directory", temp, "");
-	csv_directory_ = temp;
-	free(temp);
+	top_settings.get<std::string>("CSV Directory", csv_directory_, "");
 	// If filename has not been supplied in command-line, get it from settings
 	if (qbs_filename_.length() == 0) {
-		settings.get("Filename", temp, "");
-		qbs_filename_ = temp;
-		free(temp);
+		top_settings.get<std::string>("Filename", qbs_filename_, "");
 	}
 	data_ = new QBS_data;
 	// 
@@ -77,10 +71,10 @@ void QBS_window::cb_close(Fl_Widget* w, void* v) {
 	
 	QBS_window* that = ancestor_view<QBS_window>(w);
 	that->data_->close_qbs();
-	Fl_Preferences settings(Fl_Preferences::USER, APP_VENDOR.c_str(), APP_NAME.c_str());
-	settings.set("CSV Directory", that->csv_directory_.c_str());
-	settings.set("Filename", that->qbs_filename_.c_str());
-	settings.flush();
+	settings top_settings;
+	top_settings.set("CSV Directory", that->csv_directory_);
+	top_settings.set("Filename", that->qbs_filename_);
+	top_settings.flush();
 	Fl_Single_Window::default_callback(that, v);
 	delete that->data_;
 	return;

@@ -10,12 +10,10 @@
 #include <sstream>
 #include <vector>
 
-#include <FL/Fl_Preferences.H>
 #include <FL/Fl_Native_File_Chooser.H>
 
 using namespace std;
 
-extern Fl_Preferences* settings_;
 extern char* DATE_FORMAT;
 
 // Constructor - read data

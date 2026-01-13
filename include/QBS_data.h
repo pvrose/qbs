@@ -11,8 +11,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "FL/Fl_Preferences.H"
-
 class Fl_Input_Choice;
 
 // Data structures

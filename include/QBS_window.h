@@ -72,7 +72,6 @@ public:
     // Public variables
 
     // Various data items accessible by most classes
-    //Fl_Preferences settings_;
     QBS_data* data_;
     // Batch log
     std::ofstream* blog_file_;
