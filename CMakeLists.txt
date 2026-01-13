@@ -37,9 +37,9 @@ set(CPPFILES
 
 # set document directory
 if(MSVC)
-  set(CMAKE_INSTALL_RPATH C:/ProgramData/${VENDOR}/${PROGRAMID})
+  set(CMAKE_INSTALL_RPATH C:/ProgramData/${APP_VENDOR}/${APP_NAME})
 else()
-  set(CMAKE_INSTALL_RPATH /etc/${VENDOR}/${PROGRAMID})
+  set(CMAKE_INSTALL_RPATH /etc/${APP_VENDOR}/${APP_NAME})
 endif()
 
 # ser compiler options

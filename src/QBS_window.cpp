@@ -8,6 +8,7 @@
 #include "ident.h"
 
 #include "callback.h"
+#include "ident.h"
 #include "input_hierch.h"
 
 #include <iostream>
