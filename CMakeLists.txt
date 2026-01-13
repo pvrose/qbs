@@ -71,9 +71,9 @@ endif()
 
 
 # Add ZZACOMMON
-set(ZZACOMMON_DOX ${ZZALOG_DOX})
+set(ZZACOMMON_DOX OFF)
 add_subdirectory(zzacommon)
-set(ZZACOMMON_INCLUDE_DIR ${ZZACOMMON_SOURCE_DIR}/include)
+message(STATUS "ZZACOMMON include dir: ${ZZACOMMON_INCLUDE_DIR}")
 
 set(SMAKE_BUILD_RPATH )
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
