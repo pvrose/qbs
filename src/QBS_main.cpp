@@ -3,6 +3,7 @@
 #include "QBS_consts.h"
 
 #include "ident.h"
+#include "status.h"
 
 #include <string>
 
@@ -13,6 +14,11 @@ using namespace std;
 
 const char* DATE_FORMAT = "%Y-%m-%d";
 extern int FL_NORMAL_SIZE;
+
+// "Tie-off" unused references in zzacommon
+bool DEBUG_QUICK = false;
+bool DEVELOPMENT_MODE = false;
+status* status_ = nullptr;
 
 
 QBS_window* window_;
