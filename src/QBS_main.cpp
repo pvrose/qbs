@@ -2,9 +2,9 @@
 #include "QBS_window.h"
 #include "QBS_consts.h"
 
-#include "file_holder.h"
+#include "zc_file_holder.h"
 #include "ident.h"
-#include "status.h"
+#include "zc_status.h"
 
 #include <string>
 
@@ -18,7 +18,7 @@ extern int FL_NORMAL_SIZE;
 // "Tie-off" unused references in zzacommon
 bool DEBUG_QUICK = false;
 bool DEVELOPMENT_MODE = false;
-status* status_ = nullptr;
+zc_status* status_ = nullptr;
 
 //! File holder customisation - control data
 const std::map < uint8_t, file_control_t > FILE_CONTROL = {
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 {	
 	// Change FL defaults
 	FL_NORMAL_SIZE = 11;
-	file_holder_ = new file_holder(argv[0], FILE_CONTROL);
+	file_holder_ = new zc_file_holder(argv[0], FILE_CONTROL);
 
 // 	// First look for the icon in the smae directory as the executable
 // 	Fl_PNG_Image* icon = new Fl_PNG_Image("qbs.png");

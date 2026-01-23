@@ -4,9 +4,9 @@
 #include "QBS_window.h"
 #include "QBS_charth.h"
 
-#include "utils.h"
-#include "drawing.h"
-#include "input_hierch.h"
+#include "zc_utils.h"
+#include "zc_drawing.h"
+#include "zc_input_hierch.h"
 
 #include <FL/fl_ask.H>
 #include <FL/Fl_Button.H>

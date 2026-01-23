@@ -2,8 +2,8 @@
 #include "QBS_window.h"
 #include "QBS_data.h"
 
-#include "utils.h"
-#include "drawing.h"
+#include "zc_utils.h"
+#include "zc_drawing.h"
 
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Input_Choice.H>

@@ -4,7 +4,7 @@
 #include "QBS_top20.h"
 #include "QBS_window.h"
 
-#include "utils.h"
+#include "zc_utils.h"
 
 #include <FL/fl_ask.H>
 #include <FL/Fl_Box.H>

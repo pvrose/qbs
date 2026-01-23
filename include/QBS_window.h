@@ -1,8 +1,8 @@
 #pragma once
 
 #include "QBS_consts.h"
-#include "utils.h"
-#include "callback.h"
+#include "zc_utils.h"
+#include "zc_callback.h"
 
 #include <map>
 #include <stack>
@@ -27,7 +27,7 @@ class QBS_file;
 class QBS_dormant;
 class QBS_call;
 class QBS_batch;
-class input_hierch;
+class zc_input_hierch;
 class Fl_Wizard;
 
 /****************************************************
@@ -52,7 +52,7 @@ public:
 
      // Populate call choice with extant callsigns
     // TODO implement it in QBS_window.cpp
-    void populate_call_choice(input_hierch* ch);
+    void populate_call_choice(zc_input_hierch* ch);
     // Write batch log
     void append_batch_log(const char* text);
 

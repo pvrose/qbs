@@ -1,8 +1,8 @@
 #include "QBS_data.h"
 #include "QBS_import.h"
 #include "QBS_reporter.h"
-#include "utils.h"
-#include "callback.h"
+#include "zc_utils.h"
+#include "zc_callback.h"
 
 #include <string>
 #include <fstream>

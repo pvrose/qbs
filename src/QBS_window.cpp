@@ -6,10 +6,10 @@
 #include "QBS_batch.h"
 #include "QBS_file.h"
 
-#include "callback.h"
+#include "zc_callback.h"
 #include "ident.h"
-#include "input_hierch.h"
-#include "settings.h"
+#include "zc_input_hierch.h"
+#include "zc_settings.h"
 
 #include <iostream>
 
@@ -30,7 +30,7 @@ QBS_window::QBS_window(int W, int H, const char* L, const char* filename) :
 {
 	spells_.clear();
 
-	settings top_settings;
+	zc_settings top_settings;
 
 		// Get CSV directory name from settings
 	top_settings.get<std::string>("CSV Directory", csv_directory_, "");
@@ -71,7 +71,7 @@ void QBS_window::cb_close(Fl_Widget* w, void* v) {
 	
 	QBS_window* that = ancestor_view<QBS_window>(w);
 	that->data_->close_qbs();
-	settings top_settings;
+	zc_settings top_settings;
 	top_settings.set("CSV Directory", that->csv_directory_);
 	top_settings.set("Filename", that->qbs_filename_);
 	top_settings.flush();
@@ -165,7 +165,7 @@ void QBS_window::append_batch_log(const char* text) {
 
 
 // Populate call choice with extant callsigns
-void QBS_window::populate_call_choice(input_hierch* ch) {
+void QBS_window::populate_call_choice(zc_input_hierch* ch) {
 	ch->clear();
 	std::string call = data_->get_first_call(RCVD_ALL);
 	while (call.length()) {
