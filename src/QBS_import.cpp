@@ -50,7 +50,7 @@ bool QBS_import::read_batches() {
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
 		getline(in_, line);
-		split_line(line, columns_, ',');
+		zc::split_line(line, columns_, ',');
 		int ix = 0;
 		while (in_.good()) {
 			getline(in_, line);
@@ -69,7 +69,7 @@ bool QBS_import::read_batches() {
 // Read the batches data - store in the holding arrays
 bool QBS_import::read_batch(int box, std::string line) {
 	std::vector<std::string> values;
-	split_line(line, values, ',');
+	zc::split_line(line, values, ',');
 	// Check col 0 is a valid batch name
 	if (values[0].substr(0, 2) == "20") {
 		std::string batch = values[0];
@@ -78,7 +78,7 @@ bool QBS_import::read_batch(int box, std::string line) {
 		boxes_[batch] = box;
 		for (unsigned int col = 1; col < values.size() && col < columns_.size(); col++) {
 			std::string& val = values[col];
-			std::string column = to_upper(columns_[col]);
+			std::string column = zc::to_upper(columns_[col]);
 			// Received date
 			if (column == "RECEIVED" && val.length() > 0) {
 				event_t event = { batch, RECEIVED };
@@ -128,7 +128,7 @@ bool QBS_import::read_card_data() {
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
 		getline(in_, line);
-		split_line(line, columns_, ',');
+		zc::split_line(line, columns_, ',');
 		while (in_.good()) {
 			getline(in_, line);
 			read_call(true, line);
@@ -152,7 +152,7 @@ bool QBS_import::read_sase_data() {
 	in_.open(filename.c_str(), ios::in);
 	if (in_.good()) {
 		getline(in_, line);
-		split_line(line, columns_, ',');
+		zc::split_line(line, columns_, ',');
 		while (in_.good()) {
 			getline(in_, line);
 			read_call(false, line);
@@ -170,16 +170,16 @@ bool QBS_import::read_sase_data() {
 // Read a line of the card or SASE files
 bool QBS_import::read_call(bool card, std::string line) {
 	std::vector<std::string> values;
-	split_line(line, values, ',');
+	zc::split_line(line, values, ',');
 	// values[0] is callsign
 	if (values[0][0] == 'G') {
 		std::string call = values[0];
 		clog << call << "              " << '\r';
 		if (call.length() > 6) clog << endl;
 		notes& notes = calls_[call];
-		std::string date = now(true, DATE_FORMAT) + "(E)";
+		std::string date = zc::now(true, DATE_FORMAT) + "(E)";
 		for (unsigned int ix = 1; ix != values.size() && ix < columns_.size(); ix++) {
-			std::string column = to_upper(columns_[ix]);
+			std::string column = zc::to_upper(columns_[ix]);
 			std::string& value = values[ix];
 			std::map<std::string, std::vector<int>>& row = card ? card_matrix_[call] : sase_matrix_[call];
 			// read the call information

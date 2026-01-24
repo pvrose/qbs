@@ -14,11 +14,11 @@ extern const char* DATE_FORMAT;
 QBS_dormant::QBS_dormant(int X, int Y, int W, int H, const char* L) :
 	Fl_Group(X, Y, W, H, L)
 {
-	win_ = ancestor_view<QBS_window>(this);
+	win_ = zc::ancestor_view<QBS_window>(this);
 	data_ = win_->data_;
 	callsign_ = "";
 	num_received_ = 0;
-	date_ = now(true, DATE_FORMAT);
+	date_ = zc::now(true, DATE_FORMAT);
 	create_form();
 }
 
@@ -122,7 +122,7 @@ void QBS_dormant::enable_widgets() {
 
 // Callback - Receive SASEs
 void QBS_dormant::cb_action(Fl_Widget* w, void* v) {
-	QBS_dormant* that = ancestor_view<QBS_dormant>(w);
+	QBS_dormant* that = zc::ancestor_view<QBS_dormant>(w);
 	that->data_->mode((process_mode_t)(intptr_t)v);
 	that->win_->update_actions();
 }

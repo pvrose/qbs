@@ -318,7 +318,7 @@ void QBS_charth::chart_tip() {
 }
 
 void QBS_charth::cb_scroll(Fl_Widget* w, void* v) {
-	QBS_charth* that = ancestor_view<QBS_charth>(w);
+	QBS_charth* that = zc::ancestor_view<QBS_charth>(w);
 	Fl_Scrollbar* bar = (Fl_Scrollbar*)w;
 	that->stop_box_ = bar->value();
 	that->start_box_ = that->stop_box_ - that->number_boxes_ + 1;

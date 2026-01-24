@@ -18,9 +18,9 @@ extern const char* DATE_FORMAT;
 QBS_batch::QBS_batch(int X, int Y, int W, int H, const char* L) :
 	Fl_Group(X, Y, W, H, L)
 {
-	win_ = ancestor_view<QBS_window>(this);
+	win_ = zc::ancestor_view<QBS_window>(this);
 	data_ = win_->data_;
-	date_ = now(true, DATE_FORMAT);
+	date_ = zc::now(true, DATE_FORMAT);
 
 	create_form();
 	enable_widgets();
@@ -140,7 +140,7 @@ void QBS_batch::create_form() {
 	cx = sx;
 	ip_weight_ = new Fl_Float_Input(cx, cy, WBUTTON, HBUTTON, "Weight (kg)");
 	ip_weight_->align(FL_ALIGN_LEFT);
-	ip_weight_->callback(cb_value_float<Fl_Float_Input>, &weight_);
+	ip_weight_->callback(zc::cb_value_float<Fl_Float_Input>, &weight_);
 	ip_weight_->tooltip("Enter the weight of cards (in kg) being recycled");
 
 	cx += WBUTTON;
@@ -311,7 +311,7 @@ void QBS_batch::initialise() {
 }
 
 void QBS_batch::cb_next(Fl_Widget* w, void* v) {
-	QBS_batch* that = ancestor_view<QBS_batch>(w);
+	QBS_batch* that = zc::ancestor_view<QBS_batch>(w);
 	switch (that->data_->mode()) {
 		case process_mode_t::POSTING:
 			that->execute_post();
@@ -333,7 +333,7 @@ void QBS_batch::cb_next(Fl_Widget* w, void* v) {
 	}
 
 void QBS_batch::cb_batch(Fl_Widget* w, void* v) {
-	QBS_batch* that = ancestor_view<QBS_batch>(w);
+	QBS_batch* that = zc::ancestor_view<QBS_batch>(w);
 	*(int*)v = ((Fl_Input_Choice*)w)->menubutton()->value();
 	that->enable_widgets();
 }

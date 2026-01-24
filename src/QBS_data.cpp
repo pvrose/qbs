@@ -784,7 +784,7 @@ bool QBS_data::read_qbs(std::string& filename) {
 			while (line[l] == '\r') {
 				line.resize(l--);
 			}
-			split_line(line, words, '\t');
+			zc::split_line(line, words, '\t');
 			if (words[0].length() == 1) command = (command_t)words[0][0];
 			else command = (command_t)' ';
 			switch (command) {

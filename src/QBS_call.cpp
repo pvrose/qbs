@@ -24,9 +24,9 @@ QBS_call::QBS_call(int X, int Y, int W, int H, const char* L) :
 	keep_qty_ = 0;
 	sases_qty_ = 0;
 	do_keep_ = false;
-	win_ = ancestor_view<QBS_window>(this);
+	win_ = zc::ancestor_view<QBS_window>(this);
 	data_ = win_->data_;
-	date_ = now(false, DATE_FORMAT);
+	date_ = zc::now(false, DATE_FORMAT);
 
 	create_form();
 	enable_widgets();
@@ -78,7 +78,7 @@ void QBS_call::create_form() {
 	cx += WLABEL;
 	ip_add_qty_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "Add");
 	ip_add_qty_->align(FL_ALIGN_LEFT);
-	ip_add_qty_->callback(cb_value_int<Fl_Int_Input>, &add_qty_);
+	ip_add_qty_->callback(zc::cb_value_int<Fl_Int_Input>, &add_qty_);
 	ip_add_qty_->value(std::to_string(add_qty_).c_str());
 	ip_add_qty_->tooltip("Enter the number of cards or SASEs received");
 
@@ -100,7 +100,7 @@ void QBS_call::create_form() {
 	cx += WLABEL;
 	ip_stuff_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "Stuff");
 	ip_stuff_->align(FL_ALIGN_LEFT);
-	ip_stuff_->callback(cb_value_int<Fl_Int_Input>, &stuff_qty_);
+	ip_stuff_->callback(zc::cb_value_int<Fl_Int_Input>, &stuff_qty_);
 	ip_stuff_->value(std::to_string(stuff_qty_).c_str());
 	ip_stuff_->tooltip("Enter the number of cards being put in SASEs for posting");
 
@@ -114,7 +114,7 @@ void QBS_call::create_form() {
 
 	ip_keep_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON);
 	ip_keep_->align(FL_ALIGN_LEFT);
-	ip_keep_->callback(cb_value_int<Fl_Int_Input>, &keep_qty_);
+	ip_keep_->callback(zc::cb_value_int<Fl_Int_Input>, &keep_qty_);
 	ip_keep_->value(std::to_string(keep_qty_).c_str());
 	ip_keep_->tooltip("Enter the number of cards being put in SASEs for next time");
 
@@ -123,7 +123,7 @@ void QBS_call::create_form() {
 
 	ip_sases_ = new Fl_Int_Input(cx, cy, WBUTTON, HBUTTON, "SASEs");
 	ip_sases_->align(FL_ALIGN_LEFT);
-	ip_sases_->callback(cb_value_int<Fl_Int_Input>, &sases_qty_);
+	ip_sases_->callback(zc::cb_value_int<Fl_Int_Input>, &sases_qty_);
 	ip_sases_->value(std::to_string(sases_qty_).c_str());
 	ip_sases_->tooltip("Enter the number of SASEs for posting");
 
@@ -240,7 +240,7 @@ void QBS_call::enable_widgets() {
 
 // Execute the action
 void QBS_call::cb_execute(Fl_Widget* w, void* v) {
-	QBS_call* that = ancestor_view<QBS_call>(w);
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
 	switch (that->data_->mode()) {
 	case process_mode_t::LOG_CARD:
 		that->execute_log_card();
@@ -260,7 +260,7 @@ void QBS_call::cb_execute(Fl_Widget* w, void* v) {
 }
 
 void QBS_call::cb_done(Fl_Widget* w, void* v) {
-	QBS_call* that = ancestor_view<QBS_call>(w);
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
 	switch (that->data_->mode()) {
 	case process_mode_t::SORTING:
 		that->data_->mode(process_mode_t::PROCESSING);
@@ -276,17 +276,17 @@ void QBS_call::cb_done(Fl_Widget* w, void* v) {
 }
 
 void QBS_call::cb_call(Fl_Widget* w, void* v) {
-	cb_value<Fl_Input, std::string>(w, v);
+	zc::cb_value<Fl_Input, std::string>(w, v);
 	std::string* s = (std::string*)v;
-	(*s) = to_upper(*s);
+	(*s) = zc::to_upper(*s);
 	((Fl_Input*)w)->value(s->c_str());
-	QBS_call* that = ancestor_view<QBS_call>(w);
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
 	that->enable_widgets();
 }
 
 void QBS_call::cb_keep(Fl_Widget* w, void* v) {
-	cb_value<Fl_Button, bool>(w, v);
-	QBS_call* that = ancestor_view<QBS_call>(w);
+	zc::cb_value<Fl_Button, bool>(w, v);
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
 	that->enable_widgets();
 }
 

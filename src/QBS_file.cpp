@@ -8,7 +8,7 @@
 QBS_file::QBS_file(int X, int Y, int W, int H, const char* L) :
     Fl_Group(X, Y, W, H, L)
 {
-    win_ = ancestor_view<QBS_window>(this);
+    win_ = zc::ancestor_view<QBS_window>(this);
     create_form();
 }
 
@@ -26,7 +26,7 @@ void QBS_file::create_form() {
     curr_x += WLABEL;
     zc_filename_input* ip_csv = new zc_filename_input(curr_x, curr_y, WEDIT, HBUTTON, "CSV data");
     ip_csv->align(FL_ALIGN_LEFT);
-    ip_csv->callback(cb_value < Fl_Input, std::string>, &win_->csv_directory_);
+    ip_csv->callback(zc::cb_value < Fl_Input, std::string>, &win_->csv_directory_);
     ip_csv->when(FL_WHEN_CHANGED);
     ip_csv->type(zc_filename_input::DIRECTORY);
     ip_csv->value(win_->csv_directory_.c_str());
@@ -36,7 +36,7 @@ void QBS_file::create_form() {
     curr_y += HBUTTON + GAP;
     zc_filename_input* ip_qbs = new zc_filename_input(curr_x, curr_y, WEDIT, HBUTTON, "QBS data");
     ip_qbs->align(FL_ALIGN_LEFT);
-    ip_qbs->callback(cb_value<Fl_Input, std::string>, &win_->qbs_filename_);
+    ip_qbs->callback(zc::cb_value<Fl_Input, std::string>, &win_->qbs_filename_);
     ip_qbs->when(FL_WHEN_CHANGED);
     ip_qbs->type(zc_filename_input::FILE);
     ip_qbs->pattern("QBS files\t*.qbs");
@@ -73,14 +73,14 @@ void QBS_file::enable_widgets() {
 
 // Callbacks - import CVS files
 void QBS_file::cb_import(Fl_Widget* w, void* v) {
-    QBS_file* that = ancestor_view<QBS_file>(w);
+    QBS_file* that = zc::ancestor_view<QBS_file>(w);
     that->win_->data_->import_cvs(that->win_->csv_directory_);
     that->enable_widgets();  
 }
 
 // Callback - read QBS file
 void QBS_file::cb_read(Fl_Widget* w, void* v) {
-    QBS_file* that = ancestor_view<QBS_file>(w);
+    QBS_file* that = zc::ancestor_view<QBS_file>(w);
     that->win_->data_->read_qbs(that->win_->qbs_filename_);
 }
 

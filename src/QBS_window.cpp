@@ -69,7 +69,7 @@ void QBS_window::directory(const char* value) {
 // Window close: clear data, and call default closure
 void QBS_window::cb_close(Fl_Widget* w, void* v) {
 	
-	QBS_window* that = ancestor_view<QBS_window>(w);
+	QBS_window* that = zc::ancestor_view<QBS_window>(w);
 	that->data_->close_qbs();
 	zc_settings top_settings;
 	top_settings.set("CSV Directory", that->csv_directory_);
