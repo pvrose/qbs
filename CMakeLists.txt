@@ -11,6 +11,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+## Set home directory per OS.
+if(MSVC)
+  set(USER_HOME_DIR $ENV{USERPROFILE})
+else()
+  set(USER_HOME_DIR $ENV{HOME})
+endif()
+
 ## Set program ident
 set(APP_VENDOR "GM3ZZA")
 set(APP_NAME "QBS")
@@ -77,6 +84,17 @@ else()
   message(FATAL_ERROR "FLTK not found")
 endif()
 
+# libboost
+if (MSVC)
+  find_package(Boost CONFIG REQUIRED COMPONENTS filesystem system)
+else()
+  find_package(Boost CONFIG REQUIRED COMPONENTS ALL)
+endif()
+if (Boost_FOUND)
+  message(STATUS "Boost found: ${Boost_VERSION}")
+  message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
+  message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}")
+endif()
 
 # Add ZZACOMMON
 set(ZZACOMMON_DOX OFF)
@@ -94,6 +112,13 @@ target_include_directories(${TARGET} PRIVATE
  ${ZZACOMMON_INCLUDE_DIR}
  ${FLTK_INCLUDE_DIR}
 )
+## Extra include directories required on MSVC
+if (MSVC)
+  message(STATUS "Including other libraries for MSVC from ${USER_HOME_DIR}")
+  target_include_directories(${TARGET} PRIVATE 
+    "${USER_HOME_DIR}\\source\\repos\\json\\include"
+  )
+endif()
 target_sources(${TARGET} PRIVATE ${CPPFILES})
 if(MSVC)
   file(COPY ${QBS_SOURCE_DIR}/qbs.png
@@ -107,6 +132,7 @@ endif()
 
 target_link_libraries(${TARGET} PRIVATE 
   zzacommon
+  ${Boost_LIBRARIES}
   ${FLTK_LIBRARIES}
 )
 
