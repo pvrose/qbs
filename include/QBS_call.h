@@ -27,6 +27,7 @@ public:
     static void cb_done(Fl_Widget* w, void* v);
     static void cb_call(Fl_Widget* w, void* v);
     static void cb_keep(Fl_Widget* w, void* v);
+    static void cb_back(Fl_Widget* w, void* v);
 
 protected:
     // Process specific executes
@@ -41,6 +42,7 @@ protected:
     Fl_Input* ip_call_;
     QBS_card_table* tb_holding_;
     QBS_charth* ch_history_;
+    Fl_Button* bn_back_;
     Fl_Button* bn_execute_;
     Fl_Button* bn_done_;
     // Group 1 - Sorting, log card, log SASE

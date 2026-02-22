@@ -137,12 +137,18 @@ void QBS_call::create_form() {
 	gp_process_->size(gw, gh);
 	gp_process_->end();
 
-	cx = x() + w() - GAP - (2 * WBUTTON);
+	cx = x() + w() - GAP - (3 * WBUTTON);
 	cy = y() + h() - GAP - HBUTTON;
 
 	bn_execute_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "Execute");
 	bn_execute_->callback(cb_execute, nullptr);
 	bn_execute_->tooltip("Execute the current action");
+
+	cx += WBUTTON;
+
+	bn_back_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "Back");
+	bn_back_->callback(cb_back, nullptr);
+	bn_back_->tooltip("Go back to previous process");
 
 	cx += WBUTTON;
 
@@ -271,6 +277,20 @@ void QBS_call::cb_done(Fl_Widget* w, void* v) {
 		that->win_->update_actions();
 		break;
 	default:
+		break;
+	}
+}
+
+void QBS_call::cb_back(Fl_Widget* w, void* v) {
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
+	switch (that->data_->mode()) {
+	case process_mode_t::PROCESSING:
+		that->data_->mode(process_mode_t::SORTING);
+		that->win_->update_actions();
+		break;
+	default:
+		that->data_->mode(process_mode_t::DORMANT);
+		that->win_->update_actions();
 		break;
 	}
 }

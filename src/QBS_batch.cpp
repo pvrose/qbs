@@ -163,8 +163,14 @@ void QBS_batch::create_form() {
 	tab_report_->tooltip("Displays the callsigns received in this batch");
 	tab_report_->data(data_);
 
-	cx = x() + w() - GAP - WBUTTON;
+	cx = x() + w() - GAP - (2 * WBUTTON);
 	cy = y() + h() - GAP - HBUTTON;
+
+	bn_back_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "Back");
+	bn_back_->callback(cb_back, nullptr);
+	bn_back_->tooltip("Go back to selection screen");
+
+	cx += WBUTTON;
 
 	bn_next_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "Next");
 	bn_next_->callback(cb_next, nullptr);
@@ -313,24 +319,38 @@ void QBS_batch::initialise() {
 void QBS_batch::cb_next(Fl_Widget* w, void* v) {
 	QBS_batch* that = zc::ancestor_view<QBS_batch>(w);
 	switch (that->data_->mode()) {
-		case process_mode_t::POSTING:
-			that->execute_post();
-			break;
-		case process_mode_t::FINISHING:
-			that->execute_finish();
-			break;
-		case process_mode_t::RECYCLING:
-			that->execute_recycle();
-			break;
-		case process_mode_t::LOG_BATCH:
-			that->execute_new();
-			break;
-		case process_mode_t::BATCH_SUMMARY:
-			that->enable_widgets();
-		default:
-			break;
-		}
+	case process_mode_t::POSTING:
+		that->execute_post();
+		break;
+	case process_mode_t::FINISHING:
+		that->execute_finish();
+		break;
+	case process_mode_t::RECYCLING:
+		that->execute_recycle();
+		break;
+	case process_mode_t::LOG_BATCH:
+		that->execute_new();
+		break;
+	case process_mode_t::BATCH_SUMMARY:
+		that->enable_widgets();
+	default:
+		break;
 	}
+}
+
+void QBS_batch::cb_back(Fl_Widget* w, void* v) {
+	QBS_batch* that = zc::ancestor_view<QBS_batch>(w);
+	switch (that->data_->mode()) {
+	case process_mode_t::POSTING:
+		that->data_->mode(process_mode_t::PROCESSING);
+		that->win_->update_actions();
+		break;
+	default:
+		that->data_->mode(process_mode_t::DORMANT);
+		that->win_->update_actions();
+		break;
+	}
+}
 
 void QBS_batch::cb_batch(Fl_Widget* w, void* v) {
 	QBS_batch* that = zc::ancestor_view<QBS_batch>(w);

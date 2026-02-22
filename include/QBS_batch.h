@@ -33,6 +33,7 @@ protected:
 
     static void cb_next(Fl_Widget* w, void* v);
     static void cb_batch(Fl_Widget* w, void* v);
+    static void cb_back(Fl_Widget* w, void* v);
 
     void execute_new();
     void execute_recycle();
