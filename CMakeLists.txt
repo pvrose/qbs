@@ -23,6 +23,7 @@ set(APP_VENDOR "GM3ZZA")
 set(APP_NAME "QBS")
 string(TIMESTAMP APP_TIMESTAMP UTC)
 set(APP_VERSION "${QBS_VERSION}")
+set(APP_SOURCE_DIR ${QBS_SOURCE_DIR})
 configure_file(
   ${QBS_SOURCE_DIR}/src/ident.cpp.in
   ${QBS_SOURCE_DIR}/src/ident.cpp
@@ -66,36 +67,6 @@ set(DATAFILES
   ${QBS_SOURCE_DIR}/qbs.png
 )
 
-# FLTK - 
-# TODO: Should this be an ExternalProject?
-# MSVC work-round as FLTK built in user.
-message(STATUS "FLTK_DIR: ${FLTK_DIR}")
-if (MSVC AND NOT FLTK_DIR)
-  set(FLTK_DIR "${USER_HOME_DIR}\\source\\repos\\fltk\\build")
-endif()
-# Find FLTK.
-set(CMAKE_MODULE_PATH ../ ./)
-find_package(FLTK CONFIG REQUIRED)
-if (FLTK_FOUND)
-  message(STATUS "FLTK found: ${FLTK_VERSION}")
-  message(STATUS "FLTK include dir: ${FLTK_INCLUDE_DIR}")
-  message(STATUS "FLTK libraries: ${FLTK_LIBRARIES}")
-else()
-  message(FATAL_ERROR "FLTK not found")
-endif()
-
-# libboost
-if (MSVC)
-  find_package(Boost CONFIG REQUIRED COMPONENTS filesystem system)
-else()
-  find_package(Boost CONFIG REQUIRED COMPONENTS ALL)
-endif()
-if (Boost_FOUND)
-  message(STATUS "Boost found: ${Boost_VERSION}")
-  message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
-  message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}")
-endif()
-
 # Add ZZACOMMON
 set(ZZACOMMON_DOX OFF)
 add_subdirectory(zzacommon)
@@ -121,19 +92,17 @@ if (MSVC)
 endif()
 target_sources(${TARGET} PRIVATE ${CPPFILES})
 if(MSVC)
-  file(COPY ${QBS_SOURCE_DIR}/qbs.png
+  file(COPY ${QBS_SOURCE_DIR}/rose.png
      DESTINATION ${QBS_BINARY_DIR}/${CMAKE_BUILD_TYPE}
   )
 else()
-  file(COPY ${QBS_SOURCE_DIR}/qbs.png
+  file(COPY ${QBS_SOURCE_DIR}/rose.png
      DESTINATION ${QBS_BINARY_DIR}
   )
 endif()
 
 target_link_libraries(${TARGET} PRIVATE 
-  zzacommon
-  ${Boost_LIBRARIES}
-  ${FLTK_LIBRARIES}
+  ${ZZACOMMON_LIBRARIES}
 )
 
 install(TARGETS ${TARGET})

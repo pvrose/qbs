@@ -25,7 +25,7 @@ const std::map < uint8_t, file_control_t > FILE_CONTROL = {
 	// ID, { filename, reference, read-only
 	{ FILE_SETTINGS, { "QBS.json", false, false, 0 }},
 	{ FILE_STATUS, { "status.txt", false, false, 0}},
-	{ FILE_ICON_ZZA, { "qbs.png", true, true, 0}}
+	{ FILE_ICON_ZZA, { "rose.png", true, true, 0}}
 };
 
 QBS_window* window_;
