@@ -50,11 +50,13 @@ set(CPPFILES
 )
 
 # set document directory
-if(MSVC)
-  set(CMAKE_INSTALL_RPATH C:/ProgramData/${APP_VENDOR}/${APP_NAME})
+# set directory to install executable, reference data and documents.
+if (MSVC)
+  set(CMAKE_INSTALL_RPATH etc)
 else()
-  set(CMAKE_INSTALL_RPATH /etc/${APP_VENDOR}/${APP_NAME})
+  set(CMAKE_INSTALL_RPATH etc/${TARGET})
 endif()
+message(STATUS "Reference data will be copied to ${CMAKE_INSTALL_RPATH}")
 
 # ser compiler options
 if (MSVC)
@@ -64,7 +66,7 @@ else()
 endif()
 
 set(DATAFILES
-  ${QBS_SOURCE_DIR}/qbs.png
+  ${QBS_SOURCE_DIR}/rose.png
 )
 
 # Add ZZACOMMON
@@ -92,11 +94,11 @@ if (MSVC)
 endif()
 target_sources(${TARGET} PRIVATE ${CPPFILES})
 if(MSVC)
-  file(COPY ${QBS_SOURCE_DIR}/rose.png
+  file(COPY ${DATAFILES}
      DESTINATION ${QBS_BINARY_DIR}/${CMAKE_BUILD_TYPE}
   )
 else()
-  file(COPY ${QBS_SOURCE_DIR}/rose.png
+  file(COPY ${DATAFILES}
      DESTINATION ${QBS_BINARY_DIR}
   )
 endif()
