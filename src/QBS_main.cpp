@@ -3,7 +3,6 @@
 #include "QBS_consts.h"
 
 #include "zc_file_holder.h"
-#include "ident.h"
 #include "zc_status.h"
 
 #include <string>
@@ -14,9 +13,12 @@ using namespace std;
 
 const char* DATE_FORMAT = "%Y-%m-%d";
 extern int FL_NORMAL_SIZE;
+extern std::string APP_VERSION;
+extern std::string APP_TIMESTAMP;
+extern std::string APP_VENDOR;
+extern std::string APP_NAME;
 
 // "Tie-off" unused references in zzacommon
-bool DEBUG_QUICK = false;
 bool DEVELOPMENT_MODE = false;
 zc_status* status_ = nullptr;
 
@@ -32,7 +34,7 @@ QBS_window* window_;
 
 void create_window(std::string filename) {
 	char title[100];
-	snprintf(title, 100, "QBS - GM4-8 QSL Bureau status - %s (%s)", APP_VERSION.c_str(), APP_TIMESTAMP.c_str());
+	snprintf(title, 100, "%s - GM4-8 QSL Bureau status - %s (%s)", APP_NAME.c_str(), APP_VERSION.c_str(), APP_TIMESTAMP.c_str());
 	window_ = new QBS_window(400, 400, title, filename.c_str());
 	printf("%s\n", title);
 }

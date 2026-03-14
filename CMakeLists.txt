@@ -24,11 +24,6 @@ set(APP_NAME "QBS")
 string(TIMESTAMP APP_TIMESTAMP UTC)
 set(APP_VERSION "${QBS_VERSION}")
 set(APP_SOURCE_DIR ${QBS_SOURCE_DIR})
-configure_file(
-  ${QBS_SOURCE_DIR}/src/ident.cpp.in
-  ${QBS_SOURCE_DIR}/src/ident.cpp
-  @ONLY
-)
 
 ## Set source files
 set(CPPFILES 
@@ -46,7 +41,6 @@ set(CPPFILES
     ${QBS_SOURCE_DIR}/src/QBS_reporter.cpp
     ${QBS_SOURCE_DIR}/src/QBS_top20.cpp
     ${QBS_SOURCE_DIR}/src/QBS_window.cpp
-    ${QBS_SOURCE_DIR}/src/ident.cpp
 )
 
 # set document directory
@@ -78,7 +72,7 @@ set(SMAKE_BUILD_RPATH )
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 # Ensure external projects are built before linking qbs
 
-add_dependencies(${TARGET} zzacommon)
+add_dependencies(${TARGET} zzacommon ${ZC_APP_LIBRARY})
 
 target_include_directories(${TARGET} PRIVATE 
  ${QBS_SOURCE_DIR}/include
@@ -105,6 +99,7 @@ endif()
 
 target_link_libraries(${TARGET} PRIVATE 
   ${ZZACOMMON_LIBRARIES}
+  ${ZC_APP_LIBRARY}
 )
 
 install(TARGETS ${TARGET})
