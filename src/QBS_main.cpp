@@ -18,10 +18,6 @@ extern std::string APP_TIMESTAMP;
 extern std::string APP_VENDOR;
 extern std::string APP_NAME;
 
-// "Tie-off" unused references in zzacommon
-bool DEVELOPMENT_MODE = false;
-zc_status* status_ = nullptr;
-
 //! File holder customisation - control data
 const std::map < uint8_t, file_control_t > FILE_CONTROL = {
 	// ID, { filename, reference, read-only
