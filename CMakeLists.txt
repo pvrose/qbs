@@ -102,6 +102,24 @@ target_link_libraries(${TARGET} PRIVATE
   ${ZC_APP_LIBRARY}
 )
 
+# Copy runtime DLLs to build directory for MSVC
+if (MSVC)
+  # Get the parent project's binary directory
+  set(RUNTIME_OUTPUT_DIR ${CMAKE_BINARY_DIR})
+
+  # Use CMake's automatic runtime DLL detection
+  add_custom_command(TARGET ${TARGET} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      $<TARGET_RUNTIME_DLLS:${TARGET}>
+      ${RUNTIME_OUTPUT_DIR}
+    COMMAND_EXPAND_LISTS
+    COMMENT "Copying runtime DLLs to ${RUNTIME_OUTPUT_DIR}"
+  )
+  # The following has been included from zzacommon.
+  copy_zlib_dlls()    
+
+endif()
+
 install(TARGETS ${TARGET})
 install(FILES ${DATAFILES}
     DESTINATION ${CMAKE_INSTALL_RPATH})
