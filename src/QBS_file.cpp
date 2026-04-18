@@ -3,7 +3,7 @@
 #include "QBS_window.h"
 
 #include "zc_filename_input.h"
-#include "zc_utils.h"
+#include "zc_fltk.h"
 
 QBS_file::QBS_file(int X, int Y, int W, int H, const char* L) :
     Fl_Group(X, Y, W, H, L)

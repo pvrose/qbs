@@ -7,6 +7,7 @@
 #include "QBS_file.h"
 
 #include "zc_callback.h"
+#include "zc_fltk.h"
 #include "zc_input_hierch.h"
 #include "zc_settings.h"
 

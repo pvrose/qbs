@@ -5,6 +5,7 @@
 #include "QBS_charth.h"
 
 #include "zc_utils.h"
+#include "zc_fltk.h"
 #include "zc_drawing.h"
 #include "zc_input_hierch.h"
 

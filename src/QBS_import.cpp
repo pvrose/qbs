@@ -3,6 +3,9 @@
 #include "QBS_data.h"
 #include "QBS_window.h"
 
+#include "zc_fltk.h"
+#include "zc_utils.h"
+
 #include <string>
 #include <iostream>
 #include <fstream>

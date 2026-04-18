@@ -27,6 +27,7 @@ set(APP_SOURCE_DIR ${QBS_SOURCE_DIR})
 
 ## Set source files
 set(CPPFILES 
+    ${QBS_SOURCE_DIR}/src/app.cpp
     ${QBS_SOURCE_DIR}/src/QBS_batch.cpp
     ${QBS_SOURCE_DIR}/src/QBS_breport.cpp
     ${QBS_SOURCE_DIR}/src/QBS_call.cpp
@@ -63,16 +64,31 @@ set(DATAFILES
   ${QBS_SOURCE_DIR}/rose.png
 )
 
-# Add ZZACOMMON
-set(ZZACOMMON_DOX OFF)
-add_subdirectory(zzacommon)
-message(STATUS "ZZACOMMON include dir: ${ZZACOMMON_INCLUDE_DIR}")
+include(FetchContent)
+FetchContent_Declare(
+  zzacommon
+  GIT_REPOSITORY https://github.com/pvrose/zzacommon.git
+  GIT_TAG master
+  FIND_PACKAGE_ARGS NAMES zzacommon COMPONENTS zzaf zzam zzad zzafb
+)
+FetchContent_MakeAvailable(zzacommon)
+
+configure_file(
+  ${QBS_SOURCE_DIR}/src/app.cpp.in
+  ${QBS_SOURCE_DIR}/src/app.cpp
+  @ONLY
+)
 
 set(SMAKE_BUILD_RPATH )
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 # Ensure external projects are built before linking qbs
 
-add_dependencies(${TARGET} zzacommon ${ZC_APP_LIBRARY})
+add_dependencies(${TARGET} 
+  zzacommon::zzaf 
+  zzacommon::zzam 
+  zzacommon::zzad
+  zzacommon::zzafb
+)
 
 target_include_directories(${TARGET} PRIVATE 
  ${QBS_SOURCE_DIR}/include
@@ -98,8 +114,11 @@ else()
 endif()
 
 target_link_libraries(${TARGET} PRIVATE 
-  ${ZZACOMMON_LIBRARIES}
-  ${ZC_APP_LIBRARY}
+  ${FLTK_LIBRARIES}
+  zzacommon::zzaf
+  zzacommon::zzam
+  zzacommon::zzad
+  zzacommon::zzafb
 )
 
 # Copy runtime DLLs to build directory for MSVC
@@ -115,8 +134,6 @@ if (MSVC)
     COMMAND_EXPAND_LISTS
     COMMENT "Copying runtime DLLs to ${RUNTIME_OUTPUT_DIR}"
   )
-  # The following has been included from zzacommon.
-  copy_zlib_dlls()    
 
 endif()
 

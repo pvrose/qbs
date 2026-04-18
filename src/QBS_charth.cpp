@@ -1,6 +1,8 @@
 #include "QBS_charth.h"
 #include "QBS_data.h"
 
+#include "zc_fltk.h"
+
 #include <set>
 
 #include <FL/Fl_Tooltip.H>

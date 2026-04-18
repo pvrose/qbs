@@ -5,6 +5,7 @@
 #include "QBS_window.h"
 
 #include "zc_utils.h"
+#include "zc_fltk.h"
 
 #include <FL/fl_ask.H>
 #include <FL/Fl_Box.H>

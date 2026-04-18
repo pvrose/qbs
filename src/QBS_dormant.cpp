@@ -3,6 +3,7 @@
 #include "QBS_data.h"
 
 #include "zc_utils.h"
+#include "zc_fltk.h"
 #include "zc_drawing.h"
 
 #include <FL/Fl_Button.H>

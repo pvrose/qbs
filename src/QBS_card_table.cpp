@@ -3,7 +3,7 @@
 #include "QBS_data.h"
 #include "QBS_window.h"
 
-#include "zc_utils.h"
+#include "zc_fltk.h"
 
 QBS_card_table::QBS_card_table(int X, int Y, int W, int H, const char* L) :
     Fl_Table(X, Y, W, H, L)
