@@ -10,6 +10,9 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+if(NOT MSVC)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
 
 ## Set home directory per OS.
 if(MSVC)
