@@ -3,7 +3,7 @@
 #include "QBS_consts.h"
 
 #include "zc_file_holder.h"
-#include "zc_status.h"
+#include "zc_fltk.h"
 
 #include <string>
 
@@ -39,7 +39,7 @@ void create_window(std::string filename) {
 int main(int argc, char** argv)
 {	
 	// Change FL defaults
-	FL_NORMAL_SIZE = 11;
+	zc::customise_fltk();
 	file_holder_ = new zc_file_holder(argv[0], FILE_CONTROL);
 
 // 	// First look for the icon in the smae directory as the executable

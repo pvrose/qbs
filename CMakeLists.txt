@@ -163,3 +163,7 @@ install(TARGETS ${TARGET})
 install(FILES ${DATAFILES}
     DESTINATION ${CMAKE_INSTALL_RPATH})
 
+# install DLLs
+if (MSVC)
+    zzacommon_install_runtime_dlls(DESTINATION bin COMPONENT application)
+endif()
