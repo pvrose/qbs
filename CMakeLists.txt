@@ -64,6 +64,25 @@ set(DATAFILES
   ${QBS_SOURCE_DIR}/rose.png
 )
 
+# Add ZZACOMMON
+# Try to find zzacommon locally first (sibling directory), fall back to downloading
+if(CMAKE_BUILD_TYPE)
+  # Single-config generator (Unix Makefiles, Ninja): use specific build type
+  string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE_LOWER)
+  list(APPEND CMAKE_PREFIX_PATH 
+    "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-${BUILD_TYPE_LOWER}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-${BUILD_TYPE_LOWER}"
+  )
+endif()
+# Multi-config generator (Visual Studio) or fallback: include both
+list(APPEND CMAKE_PREFIX_PATH 
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-debug"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-release"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-debug"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-release"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/build"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/install"
+)
 include(FetchContent)
 FetchContent_Declare(
   zzacommon
