@@ -9,6 +9,7 @@
 #include "zc_drawing.h"
 #include "zc_input_hierch.h"
 
+#include <FL/filename.H>
 #include <FL/fl_ask.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Int_Input.H>
@@ -138,8 +139,13 @@ void QBS_call::create_form() {
 	gp_process_->size(gw, gh);
 	gp_process_->end();
 
-	cx = x() + w() - GAP - (3 * WBUTTON);
+	cx = x() + w() - GAP - (4 * WBUTTON);
 	cy = y() + h() - GAP - HBUTTON;
+
+	bn_qrz_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "QRZ.com");
+	bn_qrz_->callback(cb_qrz, nullptr);
+
+	cx += WBUTTON;
 
 	bn_execute_ = new Fl_Button(cx, cy, WBUTTON, HBUTTON, "Execute");
 	bn_execute_->callback(cb_execute, nullptr);
@@ -311,6 +317,13 @@ void QBS_call::cb_keep(Fl_Widget* w, void* v) {
 	that->enable_widgets();
 }
 
+// QRZ lookup
+void QBS_call::cb_qrz(Fl_Widget* w, void* v) {
+	QBS_call* that = zc::ancestor_view<QBS_call>(w);
+	std::string url = "https://www.qrz.com/db/" + that->call_;
+	fl_open_uri(url.c_str());
+}
+
 // Process specific executes
 void QBS_call::execute_log_card() {
 	char log_msg[128];
@@ -362,8 +375,9 @@ void QBS_call::execute_process() {
 		return;
 	}
 	if (stuff_qty_ == 0 && keep_qty_ == 0) {
-		fl_message("You need a value in either Stuff or Keep!");
-		return;
+		if (fl_choice("You have not specified any cards to process - do you want to proceed?", "Yes", "No", nullptr) == 1) {
+			return;
+		}
 	}
 	if (stuff_qty_ > 0 && sases_qty_ == 0) {
 		fl_message("You need to spcify number of SASEs being used for %d cards!");

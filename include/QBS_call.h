@@ -28,6 +28,7 @@ public:
     static void cb_call(Fl_Widget* w, void* v);
     static void cb_keep(Fl_Widget* w, void* v);
     static void cb_back(Fl_Widget* w, void* v);
+	static void cb_qrz(Fl_Widget* w, void* v);
 
 protected:
     // Process specific executes
@@ -45,6 +46,7 @@ protected:
     Fl_Button* bn_back_;
     Fl_Button* bn_execute_;
     Fl_Button* bn_done_;
+	Fl_Button* bn_qrz_;
     // Group 1 - Sorting, log card, log SASE
     Fl_Group* gp_add_item_;
     Fl_Int_Input* ip_add_qty_;
