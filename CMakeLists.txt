@@ -125,15 +125,9 @@ if (MSVC)
   )
 endif()
 target_sources(${TARGET} PRIVATE ${CPPFILES})
-if(MSVC)
-  file(COPY ${DATAFILES}
-     DESTINATION ${QBS_BINARY_DIR}/${CMAKE_BUILD_TYPE}
-  )
-else()
-  file(COPY ${DATAFILES}
-     DESTINATION ${QBS_BINARY_DIR}
-  )
-endif()
+file(COPY ${DATAFILES}
+   DESTINATION ${QBS_BINARY_DIR}
+)
 
 target_link_libraries(${TARGET} PRIVATE 
   ${FLTK_LIBRARIES}

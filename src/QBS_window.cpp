@@ -33,7 +33,7 @@ QBS_window::QBS_window(int W, int H, const char* L, const char* filename) :
 	zc_settings top_settings;
 
 		// Get CSV directory name from settings
-	top_settings.get<std::string>("CSV Directory", csv_directory_, "");
+	top_settings.get<std::string>("CSV Directory", csv_directory_, ".");
 	// If filename has not been supplied in command-line, get it from settings
 	if (qbs_filename_.length() == 0) {
 		top_settings.get<std::string>("Filename", qbs_filename_, "");
