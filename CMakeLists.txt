@@ -28,6 +28,26 @@ string(TIMESTAMP APP_TIMESTAMP UTC)
 set(APP_VERSION "${QBS_VERSION}")
 set(APP_SOURCE_DIR ${QBS_SOURCE_DIR})
 
+## Ensure all version components are defined for the resource file
+if(NOT DEFINED QBS_VERSION_MAJOR)
+  set(QBS_VERSION_MAJOR 0)
+endif()
+if(NOT DEFINED QBS_VERSION_MINOR)
+  set(QBS_VERSION_MINOR 0)
+endif()
+if(NOT DEFINED QBS_VERSION_PATCH)
+  set(QBS_VERSION_PATCH 0)
+endif()
+if(NOT DEFINED QBS_VERSION_TWEAK)
+  set(QBS_VERSION_TWEAK 0)
+endif()
+
+# Ensure all version variables are in cache so they're visible in function scopes
+set(QBS_VERSION_MAJOR "${QBS_VERSION_MAJOR}" CACHE INTERNAL "QBS major version")
+set(QBS_VERSION_MINOR "${QBS_VERSION_MINOR}" CACHE INTERNAL "QBS minor version")
+set(QBS_VERSION_PATCH "${QBS_VERSION_PATCH}" CACHE INTERNAL "QBS patch version")
+set(QBS_VERSION_TWEAK "${QBS_VERSION_TWEAK}" CACHE INTERNAL "QBS tweak version")
+
 ## Set source files
 set(CPPFILES 
     ${QBS_SOURCE_DIR}/src/app.cpp
@@ -67,6 +87,30 @@ set(DATAFILES
   ${QBS_SOURCE_DIR}/rose.png
 )
 
+# Generate Windows icon and resource file
+if (MSVC)
+  # Include the icon helper functions
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/icon_helper.cmake)
+
+  # Optional: Set white threshold for transparency (default: 250, range: 0-255)
+  # Higher values = more aggressive white removal (e.g., 240 removes near-white)
+  # Lower values = only pure white removed (e.g., 254 removes almost pure white)
+  if(NOT DEFINED QBS_ICON_WHITE_THRESHOLD)
+    set(QBS_ICON_WHITE_THRESHOLD 240)
+  endif()
+
+  # Generate icon and resource file using the helper function
+  generate_windows_icon_and_resource(
+    PNG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rose.png"
+    RC_TEMPLATE "${CMAKE_CURRENT_SOURCE_DIR}/qbs.rc.in"
+    WHITE_THRESHOLD ${QBS_ICON_WHITE_THRESHOLD}
+  )
+
+  # The function exports ${PROJECT_NAME}_RC_FILE which we'll use below
+  # For project QBS, this will be ${QBS_RC_FILE}
+  message(STATUS "Using resource file: ${QBS_RC_FILE}")
+endif()
+
 # Add ZZACOMMON
 # Try to find zzacommon locally first (sibling directory), fall back to downloading
 if(CMAKE_BUILD_TYPE)
@@ -87,11 +131,13 @@ list(APPEND CMAKE_PREFIX_PATH
   "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/install"
 )
 include(FetchContent)
+set(ZZACOMMON_REQUIRED_COMPONENTS zzaf zzam zzad zzafb)
+set(ZZACOMMON_BUILD_COMPONENTS "${ZZACOMMON_REQUIRED_COMPONENTS}" CACHE STRING "Components to build when zzacommon is used via FetchContent" FORCE)
 FetchContent_Declare(
   zzacommon
   GIT_REPOSITORY https://github.com/pvrose/zzacommon.git
   GIT_TAG master
-  FIND_PACKAGE_ARGS NAMES zzacommon COMPONENTS zzaf zzam zzad zzafb
+  FIND_PACKAGE_ARGS NAMES zzacommon COMPONENTS ${ZZACOMMON_REQUIRED_COMPONENTS}
 )
 FetchContent_MakeAvailable(zzacommon)
 
@@ -102,7 +148,11 @@ configure_file(
 )
 
 set(SMAKE_BUILD_RPATH )
-add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
+if (MSVC)
+  add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${QBS_RC_FILE})
+else()
+  add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
+endif()
 # Ensure external projects are built before linking qbs
 
 add_dependencies(${TARGET} 
