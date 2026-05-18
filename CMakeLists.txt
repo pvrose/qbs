@@ -42,12 +42,6 @@ if(NOT DEFINED QBS_VERSION_TWEAK)
   set(QBS_VERSION_TWEAK 0)
 endif()
 
-# Ensure all version variables are in cache so they're visible in function scopes
-set(QBS_VERSION_MAJOR "${QBS_VERSION_MAJOR}" CACHE INTERNAL "QBS major version")
-set(QBS_VERSION_MINOR "${QBS_VERSION_MINOR}" CACHE INTERNAL "QBS minor version")
-set(QBS_VERSION_PATCH "${QBS_VERSION_PATCH}" CACHE INTERNAL "QBS patch version")
-set(QBS_VERSION_TWEAK "${QBS_VERSION_TWEAK}" CACHE INTERNAL "QBS tweak version")
-
 ## Set source files
 set(CPPFILES 
     ${QBS_SOURCE_DIR}/src/app.cpp
