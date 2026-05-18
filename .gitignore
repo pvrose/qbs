@@ -16,3 +16,4 @@
 /include/timestamp.h
 /src/ident.cpp
 /src/app.cpp
+*.ps1
