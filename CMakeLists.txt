@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(QBS VERSION 2.0.3)
+project(QBS VERSION 2.1)
 
 ## Set target executable
 set (TARGET qbs)
