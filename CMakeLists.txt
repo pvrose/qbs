@@ -2,49 +2,30 @@ cmake_minimum_required(VERSION 3.16)
 
 project(QBS VERSION 2.1)
 
-## Set target executable
-set (TARGET qbs)
-if (NOT MSVC)
-  set(BUILD_SHARED_LIBS OFF)
-endif()
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-if(NOT MSVC)
-  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-endif()
+# Add shared CMake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../zzacmake/cmake")
 
-## Set home directory per OS.
-if(MSVC)
-  set(USER_HOME_DIR $ENV{USERPROFILE})
-else()
-  set(USER_HOME_DIR $ENV{HOME})
-endif()
+include(Gm3zzaProjectDefaults)
+include(Gm3zzaVersioning)
+include(Gm3zzaZzacommon)
+include(Gm3zzaResources)
+include(Gm3zzaWindowsRuntime)
 
-## Set program ident
+## Set target executable and program metadata
+set(TARGET qbs)
 set(APP_VENDOR "GM3ZZA")
 set(APP_NAME "QBS")
+set(APP_RC_VALUE "")
 string(TIMESTAMP APP_TIMESTAMP UTC)
-set(APP_VERSION "${QBS_VERSION}")
 set(APP_SOURCE_DIR ${QBS_SOURCE_DIR})
 
-## Ensure all version components are defined for the resource file
-if(NOT DEFINED QBS_VERSION_MAJOR)
-  set(QBS_VERSION_MAJOR 0)
-endif()
-if(NOT DEFINED QBS_VERSION_MINOR)
-  set(QBS_VERSION_MINOR 0)
-endif()
-if(NOT DEFINED QBS_VERSION_PATCH)
-  set(QBS_VERSION_PATCH 0)
-endif()
-if(NOT DEFINED QBS_VERSION_TWEAK)
-  set(QBS_VERSION_TWEAK 0)
-endif()
+## Initialise defaults and settings
+gm3zza_project_defaults()
+gm3zza_set_default_install_dirs("${APP_NAME}")
+gm3zza_split_version(${PROJECT_NAME})
 
-## Set source files
+## Set source files (excluding app.cpp which is generated)
 set(CPPFILES 
-    ${QBS_SOURCE_DIR}/src/app.cpp
     ${QBS_SOURCE_DIR}/src/QBS_batch.cpp
     ${QBS_SOURCE_DIR}/src/QBS_breport.cpp
     ${QBS_SOURCE_DIR}/src/QBS_call.cpp
@@ -61,93 +42,52 @@ set(CPPFILES
     ${QBS_SOURCE_DIR}/src/QBS_window.cpp
 )
 
-# set document directory
-# set directory to install executable, reference data and documents.
-if (MSVC)
-  set(CMAKE_INSTALL_RPATH etc)
-else()
-  set(CMAKE_INSTALL_RPATH etc/${TARGET})
-endif()
-message(STATUS "Reference data will be copied to ${CMAKE_INSTALL_RPATH}")
+## Set version string for app.cpp.in
+set(APP_VERSION "${QBS_VERSION}${APP_RC_VALUE}")
 
-# ser compiler options
-if (MSVC)
-#  add_compile_options(/MD)
-else()
-  add_compile_options(-g)
-endif()
 
 set(DATAFILES
   ${QBS_SOURCE_DIR}/rose.png
 )
 
-# Generate Windows icon and resource file
-if (MSVC)
-  # Include the icon helper functions
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/icon_helper.cmake)
-
-  # Optional: Set white threshold for transparency (default: 250, range: 0-255)
-  # Higher values = more aggressive white removal (e.g., 240 removes near-white)
-  # Lower values = only pure white removed (e.g., 254 removes almost pure white)
+## Generate Windows icon and resource file
+if(MSVC)
   if(NOT DEFINED QBS_ICON_WHITE_THRESHOLD)
     set(QBS_ICON_WHITE_THRESHOLD 240)
   endif()
-
-  # Generate icon and resource file using the helper function
-  generate_windows_icon_and_resource(
+  
+  gm3zza_enable_windows_icon(
+    TARGET ${TARGET}
     PNG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rose.png"
     RC_TEMPLATE "${CMAKE_CURRENT_SOURCE_DIR}/qbs.rc.in"
     WHITE_THRESHOLD ${QBS_ICON_WHITE_THRESHOLD}
-  )
-
-  # The function exports ${PROJECT_NAME}_RC_FILE which we'll use below
-  # For project QBS, this will be ${QBS_RC_FILE}
-  message(STATUS "Using resource file: ${QBS_RC_FILE}")
-endif()
-
-# Add ZZACOMMON
-# Try to find zzacommon locally first (sibling directory), fall back to downloading
-if(CMAKE_BUILD_TYPE)
-  # Single-config generator (Unix Makefiles, Ninja): use specific build type
-  string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE_LOWER)
-  list(APPEND CMAKE_PREFIX_PATH 
-    "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-${BUILD_TYPE_LOWER}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-${BUILD_TYPE_LOWER}"
+    OUTPUT_VAR APP_RC_FILE
   )
 endif()
-# Multi-config generator (Visual Studio) or fallback: include both
-list(APPEND CMAKE_PREFIX_PATH 
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-debug"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/build/x64-release"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-debug"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/out/install/x64-release"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/build"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../zzacommon/install"
-)
-include(FetchContent)
-set(ZZACOMMON_REQUIRED_COMPONENTS zzaf zzam zzad zzafb)
-set(ZZACOMMON_BUILD_COMPONENTS "${ZZACOMMON_REQUIRED_COMPONENTS}" CACHE STRING "Components to build when zzacommon is used via FetchContent" FORCE)
-FetchContent_Declare(
-  zzacommon
-  GIT_REPOSITORY https://github.com/pvrose/zzacommon.git
-  GIT_TAG master
-  FIND_PACKAGE_ARGS NAMES zzacommon COMPONENTS ${ZZACOMMON_REQUIRED_COMPONENTS}
-)
-FetchContent_MakeAvailable(zzacommon)
 
-configure_file(
-  ${QBS_SOURCE_DIR}/src/app.cpp.in
-  ${QBS_SOURCE_DIR}/src/app.cpp
-  @ONLY
+## Source file generation in binary tree
+gm3zza_generate_app_source(
+  INPUT "${QBS_SOURCE_DIR}/src/app.cpp.in"
+  OUTPUT_VAR GENERATED_APP_CPP
 )
 
-set(SMAKE_BUILD_RPATH )
-if (MSVC)
-  add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${QBS_RC_FILE})
+## Source file generation in binary tree (replaces old src/app.cpp.in configure_file)
+gm3zza_generate_app_source(
+  INPUT "${QBS_SOURCE_DIR}/src/app.cpp.in"
+  OUTPUT_VAR GENERATED_APP_CPP
+)
+
+set(ALL_CPPFILES ${GENERATED_APP_CPP} ${CPPFILES})
+
+## Use shared zzacommon
+gm3zza_use_zzacommon(COMPONENTS zzaf zzam zzad zzafb GIT_TAG master)
+
+## Create executable
+if(MSVC)
+  add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${APP_RC_FILE})
 else()
   add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
 endif()
-# Ensure external projects are built before linking qbs
 
 add_dependencies(${TARGET} 
   zzacommon::zzaf 
@@ -157,21 +97,19 @@ add_dependencies(${TARGET}
 )
 
 target_include_directories(${TARGET} PRIVATE 
- ${QBS_SOURCE_DIR}/include
- ${ZZACOMMON_INCLUDE_DIR}
- ${FLTK_INCLUDE_DIR}
+  ${QBS_SOURCE_DIR}/include
+  ${ZZACOMMON_INCLUDE_DIR}
+  ${FLTK_INCLUDE_DIR}
 )
-## Extra include directories required on MSVC
-if (MSVC)
+
+if(MSVC)
   message(STATUS "Including other libraries for MSVC from ${USER_HOME_DIR}")
   target_include_directories(${TARGET} PRIVATE 
     "${USER_HOME_DIR}\\source\\repos\\json\\include"
   )
 endif()
-target_sources(${TARGET} PRIVATE ${CPPFILES})
-file(COPY ${DATAFILES}
-   DESTINATION ${QBS_BINARY_DIR}
-)
+
+target_sources(${TARGET} PRIVATE ${ALL_CPPFILES})
 
 target_link_libraries(${TARGET} PRIVATE 
   ${FLTK_LIBRARIES}
@@ -181,27 +119,17 @@ target_link_libraries(${TARGET} PRIVATE
   zzacommon::zzafb
 )
 
-# Copy runtime DLLs to build directory for MSVC
-if (MSVC)
-  # Get the parent project's binary directory
-  set(RUNTIME_OUTPUT_DIR ${CMAKE_BINARY_DIR})
+## Stage runtime assets for development
+gm3zza_stage_runtime_files(TARGET ${TARGET} FILES ${DATAFILES})
 
-  # Use CMake's automatic runtime DLL detection
-  add_custom_command(TARGET ${TARGET} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      $<TARGET_RUNTIME_DLLS:${TARGET}>
-      ${RUNTIME_OUTPUT_DIR}
-    COMMAND_EXPAND_LISTS
-    COMMENT "Copying runtime DLLs to ${RUNTIME_OUTPUT_DIR}"
-  )
+## Copy runtime DLLs for development
+gm3zza_copy_runtime_dlls(TARGET ${TARGET})
 
+## Install
+install(TARGETS ${TARGET} RUNTIME COMPONENT applications)
+gm3zza_install_runtime_files(FILES ${DATAFILES} COMPONENT data)
+
+if(MSVC)
+  zzacommon_install_runtime_dlls(DESTINATION bin COMPONENT application)
 endif()
 
-install(TARGETS ${TARGET})
-install(FILES ${DATAFILES}
-    DESTINATION ${CMAKE_INSTALL_RPATH})
-
-# install DLLs
-if (MSVC)
-    zzacommon_install_runtime_dlls(DESTINATION bin COMPONENT application)
-endif()
