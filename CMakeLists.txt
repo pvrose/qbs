@@ -3,7 +3,14 @@ cmake_minimum_required(VERSION 3.16)
 project(QBS VERSION 2.1)
 
 # Add shared CMake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../zzacmake/cmake")
+include(FetchContent)
+FetchContent_Declare(
+    zzacmake
+    GIT_REPOSITORY https://github.com/pvrose/zzacmake.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(zzacmake)
+list(APPEND CMAKE_MODULE_PATH "${zzacmake_SOURCE_DIR}/cmake")
 
 include(Gm3zzaProjectDefaults)
 include(Gm3zzaVersioning)
@@ -66,12 +73,6 @@ if(MSVC)
 endif()
 
 ## Source file generation in binary tree
-gm3zza_generate_app_source(
-  INPUT "${QBS_SOURCE_DIR}/src/app.cpp.in"
-  OUTPUT_VAR GENERATED_APP_CPP
-)
-
-## Source file generation in binary tree (replaces old src/app.cpp.in configure_file)
 gm3zza_generate_app_source(
   INPUT "${QBS_SOURCE_DIR}/src/app.cpp.in"
   OUTPUT_VAR GENERATED_APP_CPP
