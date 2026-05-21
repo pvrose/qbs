@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(QBS VERSION 2.1)
+project(QBS VERSION 2.2)
 
 # Add shared CMake modules
 # First look in sibling path for development, then in installed location for users
