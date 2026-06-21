@@ -93,7 +93,7 @@ gm3zza_generate_app_source(
 set(ALL_CPPFILES ${GENERATED_APP_CPP} ${CPPFILES})
 
 ## Use shared zzacommon
-gm3zza_use_zzacommon(COMPONENTS zzaf zzam zzad zzafb GIT_TAG v1.2.6)
+gm3zza_use_zzacommon(COMPONENTS zzaf zzam zzad zzafb GIT_TAG v1.2.7)
 
 ## Create executable
 if(MSVC)
