@@ -143,6 +143,6 @@ install(TARGETS ${TARGET} RUNTIME COMPONENT applications)
 gm3zza_install_runtime_files(FILES ${DATAFILES} COMPONENT data)
 
 if(MSVC)
-  zzacommon_install_runtime_dlls(DESTINATION bin COMPONENT application)
+  zzacommon_install_runtime_dlls(TARGET ${TARGET} DESTINATION bin COMPONENT application)
 endif()
 
