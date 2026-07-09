@@ -30,7 +30,7 @@ QBS_window* window_;
 
 void create_window(std::string filename) {
 	char title[100];
-	snprintf(title, 100, "%s - GM4-8 QSL Bureau status - %s (%s)", APP_NAME.c_str(), APP_VERSION.c_str(), APP_TIMESTAMP.c_str());
+	snprintf(title, 100, "%s: %s", APP_NAME.c_str(), APP_VERSION.c_str());
 	window_ = new QBS_window(400, 400, title, filename.c_str());
 	printf("%s\n", title);
 }
@@ -41,22 +41,6 @@ int main(int argc, char** argv)
 	// Change FL defaults
 	zc::customise_fltk();
 	file_holder_ = new zc_file_holder(argv[0], FILE_CONTROL);
-
-// 	// First look for the icon in the smae directory as the executable
-// 	Fl_PNG_Image* icon = new Fl_PNG_Image("qbs.png");
-// 	if (icon->fail()) {
-// 		// else look in
-// #ifdef _WIN32
-// 		// C:\ProgramData\GM3ZZA\QBS
-// 		std::string icon_file = std::string(getenv("ProgramData")) + "\\" + APP_VENDOR + "\\" + APP_NAME + "\\qbs.png";
-// #else
-// 		// /etc/GM3ZZA/QBS
-// 		std::string icon_file = "/etc/" + APP_VENDOR + "/" + APP_NAME + "/qbs.png";
-// #endif
-// 		delete icon;
-// 		icon = new Fl_PNG_Image(icon_file.c_str());
-// 	}
-// 	Fl_Window::default_icon(icon);
 
 	// Get filename - use argument if set
 	std::string filename = "";

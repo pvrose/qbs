@@ -30,6 +30,11 @@ include(Gm3zzaZzacommon)
 include(Gm3zzaResources)
 include(Gm3zzaWindowsRuntime)
 
+gm3zza_get_git_version(MY_DYNAMIC_VERSION)
+
+project(QBS VERSION ${MY_DYNAMIC_VERSION})
+message(STATUS "Project version: ${QBS_VERSION}")
+
 ## Set target executable and program metadata
 set(TARGET qbs)
 set(APP_VENDOR "GM3ZZA")
