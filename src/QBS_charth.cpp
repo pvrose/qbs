@@ -91,7 +91,7 @@ void QBS_charth::draw_chart() {
 	for (int b = start_box_, ix = 0; b <= stop_box_; b++, ix++, count++) {
 		std::string box_name = data_->get_batch(b);
 		std::string label = "";
-		if (box_name.substr(5, 2) == "Q1") {
+		if (box_name[6] == '1') {
 			label = box_name.substr(2, 2);
 		}
 		box_data* box = data_->get_box(b);
