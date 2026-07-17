@@ -2,6 +2,9 @@
 #include "QBS_data.h"
 
 #include "zc_fltk.h"
+#include "zc_graph_.h"
+#include "zc_range.h"
+#include "zc_zoom_scroll_bar.h"
 
 #include <set>
 
@@ -13,21 +16,18 @@
 
 using namespace std;
 
-const Fl_Color COLOUR_RECEIVED = FL_YELLOW;
+const Fl_Color COLOUR_RECEIVED = FL_MAGENTA;
 const Fl_Color COLOUR_RECYCLED = FL_RED;
 const Fl_Color COLOUR_SENT = FL_GREEN;
-const int AXIS_WIDTH = 16;
-const int LEGEND_HEIGHT = 7;
 
 QBS_charth::QBS_charth(int X, int Y, int W, int H, const char* L) :
 	Fl_Group(X, Y, W, H, L)
 {
 	data_ = nullptr;
 	max_ = 15;
-	number_boxes_ = 0;
-	start_box_ = 0;
 	win_tip_ = nullptr;
 	create_form();
+	update("");
 }
 
 QBS_charth::~QBS_charth() {
@@ -35,19 +35,38 @@ QBS_charth::~QBS_charth() {
 }
 
 void QBS_charth::create_form() {
-	box(FL_FLAT_BOX);
-	color(FL_BACKGROUND2_COLOR);
+	box(FL_BORDER_BOX);
 
-	// Allow space foe axis
-	int curr_x = x() + AXIS_WIDTH;
-	int curr_w = w() - AXIS_WIDTH;
+	int cx = x();
+	int cy = y();
+	int ch = h() - HBUTTON;
+	chart_ = new zc_graph_bar_vertical(cx, cy, w(), ch);
+	chart_->box(FL_FLAT_BOX);
 
-	chart_ = new Fl_Chart(curr_x, y(), curr_w, h() - LEGEND_HEIGHT - HBUTTON);
-	chart_->box(FL_NO_BOX);
-	chart_->type(FL_BAR_CHART);
-	chart_->autosize(true);
+	cy += ch;
 
-	scroll_ = new Fl_Scrollbar(x(), chart_->y() + chart_->h() + LEGEND_HEIGHT, w(), HBUTTON);
+	// Add legend boxes
+	box_rcvd_ = new Fl_Box(cx, cy, HBUTTON / 2, HBUTTON / 2, "RCVD");
+	box_rcvd_->box(FL_FLAT_BOX);
+	box_rcvd_->align(FL_ALIGN_RIGHT);
+	box_rcvd_->color(COLOUR_RECEIVED);
+
+	cx += w() / 3;
+	box_sent_ = new Fl_Box(cx, cy, HBUTTON / 2, HBUTTON / 2, "SENT");
+	box_sent_->box(FL_FLAT_BOX);
+	box_sent_->align(FL_ALIGN_RIGHT);
+	box_sent_->color(COLOUR_SENT);
+
+	cx += w() / 3;
+	box_rcyc_ = new Fl_Box(cx, cy, HBUTTON / 2, HBUTTON / 2, "RCYC");
+	box_rcyc_->box(FL_FLAT_BOX);
+	box_rcyc_->align(FL_ALIGN_RIGHT);
+	box_rcyc_->color(COLOUR_RECYCLED);
+
+	cy += HBUTTON / 2;
+	cx = x();
+
+	scroll_ = new zc_zoom_scroll_bar(cx, cy, w(), HBUTTON / 2);
 	scroll_->type(FL_HORIZONTAL);
 	scroll_->callback(cb_scroll, nullptr);
 
@@ -60,195 +79,75 @@ void QBS_charth::data(QBS_data* d) {
 
 void QBS_charth::update(std::string call) {
 	call_ = call;
-	stop_box_= data_->get_current();
-	start_box_ = stop_box_ > 11 ? stop_box_ - 11 : 0;
-	head_box_ = data_->get_head();
-	number_boxes_ = stop_box_ - start_box_ + 1;
-
-	if (number_boxes_ > 11) {
-		scroll_->activate();
-		scroll_->range(12, stop_box_);
-		scroll_->value(stop_box_);
-	} else {
-		scroll_->deactivate();
-	}
-	draw_chart();
-
+	set_chart();
 }
 
-void QBS_charth::draw_chart() {
-
-	max_ = 0;
-	average_ = 0.0;
-	int count = 0;
-
-	chart_counts_.resize(number_boxes_ * 4);
-
-	chart_->clear();
-
-	char err_msg[64];
-
-	for (int b = start_box_, ix = 0; b <= stop_box_; b++, ix++, count++) {
-		std::string box_name = data_->get_batch(b);
-		std::string label = "";
-		if (box_name[6] == '1') {
-			label = box_name.substr(2, 2);
-		}
-		box_data* box = data_->get_box(b);
-		// Add received data
-		int rcvd = 0;
-		if (box->received->find(call_) != box->received->end()) {
-			rcvd = box->received->at(call_);
-			if (rcvd < 0) {
-				snprintf(err_msg, sizeof(err_msg), "Negative value %d received Box %s\n", rcvd, box_name.c_str());
-				clog << err_msg;
-				rcvd = 0;
+// Set the chart data from the QBS_data object
+void QBS_charth::set_chart() {
+	chart_->start_config();
+	chart_->clear_data_sets();
+	chart_->set_axis_params(0);
+	chart_->set_axis_params(1);
+	chart_->set_axis_ranges(1, zc_range<double>(0, 5), zc_range<double>(0, 100), zc_range<double>(0, 15));
+	
+	if (data_) {
+		// Get the number of boxes to display
+		int total_boxes = data_->get_current();
+		if (total_boxes > 0) {
+			std::vector<std::string> labels;
+			// For the first batch in every year, display the year in the label
+			for (int b = 0; b <= total_boxes; b++) {
+				std::string box_name = data_->get_batch(b);
+				if (box_name[6] == '1') {
+					labels.push_back(box_name.substr(2, 2));
+				}
+				else {
+					labels.push_back("");
+				}
 			}
-			max_ = std::max(max_, rcvd);
-			average_ += rcvd;
-		}
-		chart_counts_[ix] = rcvd;
-		chart_->add((double)rcvd, label.c_str(), COLOUR_RECEIVED);
-		// Add recycled and sent data
-		int rcyc = 0;
-		int sent = 0;
-		if (box->sent->find(call_) != box->sent->end()) {
-			sent = box->sent->at(call_);
-			if (sent < 0) {
-				snprintf(err_msg, sizeof(err_msg), "Negative value %d sent Box %s\n", sent, box_name.c_str());
-				clog << err_msg;
-				sent = 0;
+			chart_->set_bar_labels(0, labels);
+			received_data_.clear();
+			sent_data_.clear();
+			recycled_data_.clear();
+			double average_rcvd = 0.0;
+			// Add the data to the chart
+			for (int b = 0; b <= total_boxes; b++) {
+				box_data* box = data_->get_box(b);
+				int rcvd = 0;
+				if (box->received->find(call_) != box->received->end()) {
+					rcvd = box->received->at(call_);
+				}
+				average_rcvd += rcvd;
+				int sent = 0;
+				if (box->sent->find(call_) != box->sent->end()) {
+					sent = box->sent->at(call_);
+				}
+				int rcyc = 0;
+				if (box->counts->find(call_) != box->counts->end()) {
+					rcyc = box->counts->at(call_);
+				}
+				received_data_.push_back(std::make_pair((double)b, (double)rcvd));
+				sent_data_.push_back(std::make_pair((double)b, (double)sent));
+				recycled_data_.push_back(std::make_pair((double)b, (double)rcyc));
 			}
-		}
-		ix++;
-		chart_counts_[ix] = sent;
-		chart_->add((double)sent, "", COLOUR_SENT);
-		if (b < head_box_ && box->counts->find(call_) != box->counts->end()) {
-			rcyc = box->counts->at(call_);
-			if (rcyc < 0) {
-				snprintf(err_msg, sizeof(err_msg), "Negative value %d recycled Box %s\n", rcyc, box_name.c_str());
-				clog << err_msg;
-				rcyc = 0;
+			chart_->add_data_set(1, &received_data_, { COLOUR_RECEIVED, 1, FL_SOLID });
+			chart_->add_data_set(1, &sent_data_, { COLOUR_SENT, 1, FL_SOLID });
+			chart_->add_data_set(1, &recycled_data_, { COLOUR_RECYCLED, 1, FL_SOLID });
+			average_rcvd /= (double)(total_boxes + 1);
+			chart_->add_marker(1, zc_graph_::FOREGROUND, { FL_BLUE, 1, FL_DASHDOT }, average_rcvd);
+			if (total_boxes > 12) {
+				chart_->set_axis_range(0, zc_range<double>(total_boxes - 12, total_boxes));
 			}
 		}
-		ix++;
-		chart_counts_[ix] = rcyc;
-		max_ = std::max(max_, rcyc);
-		chart_->add((double)(rcyc), "", COLOUR_RECYCLED);
-
-		ix++;
-		chart_counts_[ix] = 0;
-		chart_->add(0, "", color());
+		scroll_->bounds(zc_range<double>(0, total_boxes));
 	}
+	chart_->end_config();
+	chart_->redraw();
 
-	average_ /= count;
-
-	if (max_ > 50) max_ = 100;
-	else if(max_ > 25) max_ = 50;
-	else if (max_ > 15) max_ = 25;
-	else max_ = 15;
-
-	// Set boiunds of recycled and sent to those of received
-	chart_->bounds(0, max_);
-	redraw();
+	scroll_->value(chart_->get_axis_range(0));
 }
 
-void QBS_charth::draw_y_axis() {
-	// Draw the SWR axis
-	fl_color(FL_FOREGROUND_COLOR);
-	int ax = x() + AXIS_WIDTH;
-	int dh = fl_height();
-	int ay = y();
-	int ah = chart_->h() - dh - 1;
-
-	fl_line(ax, ay, ax, ay + ah);
-
-	// Now add the ticks - generate values
-	set<double> ticks;
-	ticks.clear();
-	double tick = 0.0;
-	double gap;
-	if (max_ >= 100) {
-		gap = 50.0;
-	}
-	else if (max_ >= 50) {
-		gap = 20.0;
-	}
-	else if (max_ >= 20) {
-		gap = 10.0;
-	}
-	else if (max_ >= 10) {
-		gap = 5.0;
-	}
-	else {
-		gap = 2.0;
-	}
-	while (tick <= max_) {
-		ticks.insert(tick);
-		tick += gap;
-	}
-	double range = max_;
-	double pixel_per_unit = ah / range;
-	// For each tick
-	for (auto it = ticks.begin(); it != ticks.end(); it++) {
-		int ty = ay + ah - (int)round(*it * pixel_per_unit);
-		// Draw the tick
-		fl_color(FL_FOREGROUND_COLOR);
-		fl_line(x(), ty, ax, ty);
-		// Label the tick
-		char l[10];
-		snprintf(l, sizeof(l), "%.0f", *it);
-		fl_draw(l, x() + 1, ty - 1);
-	}
-}
-
-void QBS_charth::draw_average() {
-	int ax = x() + AXIS_WIDTH;
-	int ay = y();
-	int dh = fl_height();
-	int ah = chart_->h() - dh - 1;
-	int aw = chart_->w();
-	double pixel_per_unit = (double)ah / (double)max_;
-	int ly = ay + ah - (int)round(average_ * pixel_per_unit);
-	// Draw the line
-	fl_color(FL_BLUE);
-	fl_line_style(FL_DASHDOT);
-	fl_line(ax, ly, ax + aw, ly);
-	fl_line_style(0);
-}
-
-void QBS_charth::draw_legend() {
-	int x = Fl_Group::x();
-	int y = Fl_Group::y() + chart_->h();
-
-	fl_color(COLOUR_RECEIVED);
-	fl_rectf(x + 1, y + 1, LEGEND_HEIGHT -1, LEGEND_HEIGHT - 1);
-	fl_color(FL_FOREGROUND_COLOR);
-	x += LEGEND_HEIGHT;
-	fl_draw("RCVD", x, y + LEGEND_HEIGHT - 1);
-	x += w()/3 - LEGEND_HEIGHT;
-
-	fl_color(COLOUR_SENT);
-	fl_rectf(x + 1, y + 1, LEGEND_HEIGHT -1, LEGEND_HEIGHT - 1);
-	fl_color(FL_FOREGROUND_COLOR);
-	x += LEGEND_HEIGHT;
-	fl_draw("SENT", x, y + LEGEND_HEIGHT - 1);
-	x += w()/3 - LEGEND_HEIGHT;
-
-	fl_color(COLOUR_RECYCLED);
-	fl_rectf(x + 1, y + 1, LEGEND_HEIGHT -1, LEGEND_HEIGHT - 1);
-	fl_color(FL_FOREGROUND_COLOR);
-	x += LEGEND_HEIGHT;
-	fl_draw("RCYC", x, y + LEGEND_HEIGHT - 1);
-}
-
-void QBS_charth::draw() {
-	Fl_Group::draw();
-	draw_y_axis();
-	draw_average();
-	draw_legend();
-}
-
+/*
 //Place holder for now
 int QBS_charth::handle(int event) {
 	switch(event) {
@@ -271,7 +170,8 @@ int QBS_charth::handle(int event) {
 	}
 	return Fl_Group::handle(event);
 }
-
+*/
+/*
 void QBS_charth::chart_tip() {
 	int x = Fl::event_x() - chart_->x();
 	float bar_width = (float)chart_->w() / (float)number_boxes_;
@@ -316,13 +216,12 @@ void QBS_charth::chart_tip() {
 	win_tip_->set_tooltip_window();
 	// Must be after set_tooltip_window.
 	win_tip_->show();
-
 }
+*/
 
 void QBS_charth::cb_scroll(Fl_Widget* w, void* v) {
 	QBS_charth* that = zc::ancestor_view<QBS_charth>(w);
-	Fl_Scrollbar* bar = (Fl_Scrollbar*)w;
-	that->stop_box_ = bar->value();
-	that->start_box_ = that->stop_box_ - that->number_boxes_ + 1;
-	that->draw_chart();
+	zc_zoom_scroll_bar* bar = (zc_zoom_scroll_bar*)w;	zc_range<double> range = bar->value();
+	that->chart_->set_axis_range(0, range);
+	that->chart_->redraw();
 }
