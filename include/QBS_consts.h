@@ -38,6 +38,7 @@ enum process_mode_t {
 	BATCH_SUMMARY,               // Produce batch summary report
 	BATCH_REPORT,                // Produce batch callsign report
 	CALL_HISTORY,                // View call history
+	HISTORY,                     // View history of all batches
 };
 
 enum reading_mode_t {

@@ -58,6 +58,7 @@ set(CPPFILES
     ${QBS_SOURCE_DIR}/src/QBS_data.cpp
     ${QBS_SOURCE_DIR}/src/QBS_dormant.cpp
     ${QBS_SOURCE_DIR}/src/QBS_file.cpp
+    ${QBS_SOURCE_DIR}/src/QBS_history.cpp
     ${QBS_SOURCE_DIR}/src/QBS_import.cpp
     ${QBS_SOURCE_DIR}/src/QBS_main.cpp
     ${QBS_SOURCE_DIR}/src/QBS_notes.cpp

@@ -54,6 +54,7 @@ protected:
     Fl_Button* bn_batch_report_;
     Fl_Button* bn_call_summary_;
     Fl_Button* bn_call_history_;
+    Fl_Button* bn_history_;
 
 };
 

@@ -5,6 +5,7 @@
 #include "QBS_call.h"
 #include "QBS_batch.h"
 #include "QBS_file.h"
+#include "QBS_history.h"
 
 #include "zc_callback.h"
 #include "zc_fltk.h"
@@ -104,6 +105,9 @@ void QBS_window::create_form() {
 	spells_[LOG_BATCH] = g_batch_;
 	spells_[BATCH_SUMMARY] = g_batch_;
 	spells_[BATCH_REPORT] = g_batch_;
+
+	g_history_ = new QBS_history(x(), y(), w(), h());
+	spells_[HISTORY] = g_history_;
 
 	wiz_->end();
 

@@ -27,6 +27,7 @@ class QBS_file;
 class QBS_dormant;
 class QBS_call;
 class QBS_batch;
+class QBS_history;
 class zc_input_hierch;
 class Fl_Wizard;
 
@@ -91,6 +92,7 @@ protected:
     QBS_dormant* g_dormant_;
     QBS_call* g_call_;
     QBS_batch* g_batch_;
+	QBS_history* g_history_;
 
     // The groups within the wizard that perform specific acts (hence spells).
     std::map<process_mode_t, Fl_Group*> spells_;

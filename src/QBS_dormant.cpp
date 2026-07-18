@@ -97,6 +97,12 @@ void QBS_dormant::create_form() {
 	bn_call_history_->callback(cb_action, (void*)(intptr_t)process_mode_t::CALL_HISTORY);
 	bn_call_history_->tooltip("Display recent activity for call");
 
+	cy += HBUTTON;
+
+	bn_history_ = new Fl_Button(cx, cy, 2 * WBUTTON, HBUTTON, "History");
+	bn_history_->callback(cb_action, (void*)(intptr_t)process_mode_t::HISTORY);
+	bn_history_->tooltip("Display history of all batches");
+
 	end();
 	show();
 }
