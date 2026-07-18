@@ -41,7 +41,8 @@ void QBS_charth::create_form() {
 	int cy = y();
 	int ch = h() - HBUTTON;
 	chart_ = new zc_graph_bar_vertical(cx, cy, w(), ch);
-	chart_->box(FL_FLAT_BOX);
+	chart_->box(FL_BORDER_BOX);
+	chart_->textsize(FL_NORMAL_SIZE - 2);
 
 	cy += ch;
 
@@ -84,6 +85,7 @@ void QBS_charth::update(std::string call) {
 
 // Set the chart data from the QBS_data object
 void QBS_charth::set_chart() {
+	int total_boxes = 0;
 	chart_->start_config();
 	chart_->clear_data_sets();
 	chart_->set_axis_params(0);
@@ -92,7 +94,7 @@ void QBS_charth::set_chart() {
 	
 	if (data_) {
 		// Get the number of boxes to display
-		int total_boxes = data_->get_current();
+		total_boxes = data_->get_current();
 		if (total_boxes > 0) {
 			std::vector<std::string> labels;
 			// For the first batch in every year, display the year in the label
@@ -135,13 +137,15 @@ void QBS_charth::set_chart() {
 			chart_->add_data_set(1, &recycled_data_, { COLOUR_RECYCLED, 1, FL_SOLID });
 			average_rcvd /= (double)(total_boxes + 1);
 			chart_->add_marker(1, zc_graph_::FOREGROUND, { FL_BLUE, 1, FL_DASHDOT }, average_rcvd);
-			if (total_boxes > 12) {
-				chart_->set_axis_range(0, zc_range<double>(total_boxes - 12, total_boxes));
-			}
 		}
 		scroll_->bounds(zc_range<double>(0, total_boxes));
 	}
 	chart_->end_config();
+	// Reduce the range to the last 12 boxes if there are more than 12 boxes
+	// \note this can only be done after end_config().
+	if (total_boxes > 12) {
+		chart_->set_axis_range(0, zc_range<double>(total_boxes - 12, total_boxes));
+	}
 	chart_->redraw();
 
 	scroll_->value(chart_->get_axis_range(0));
