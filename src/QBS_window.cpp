@@ -184,4 +184,5 @@ void QBS_window::enable_widgets() {
 	g_dormant_->enable_widgets();
 	g_call_->enable_widgets();
 	g_batch_->enable_widgets();
+	g_history_->enable_widgets();
 }

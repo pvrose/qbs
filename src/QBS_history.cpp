@@ -32,7 +32,7 @@ QBS_history::QBS_history(int X, int Y, int W, int H, const char* L) :
 	win_ = zc::ancestor_view<QBS_window>(this);
 	data_ = win_->data_;
 	create_form();
-	copy_data_to_chart();
+	enable_widgets();
 }
 
 void QBS_history::create_form() {
@@ -40,11 +40,14 @@ void QBS_history::create_form() {
 	labelsize(FL_NORMAL_SIZE + 2);
 	box(FL_BORDER_BOX);
 
-	int cx = x() + GAP + WLABEL;
+	int cx = x() + GAP;
 	int cy = y() + GAP + labelsize();
 	int sy = cy;
 
-	chart_ = new zc_graph_bar_vertical(cx, cy, 200, 200);
+	int cw = w() - (2 * GAP);
+	int ch = h() - (2 * GAP) - labelsize() - HBUTTON - HBUTTON - GAP;
+
+	chart_ = new zc_graph_bar_vertical(cx, cy, cw, ch);
 	chart_->box(FL_BORDER_BOX);
 	chart_->textsize(FL_NORMAL_SIZE - 2);
 
@@ -72,7 +75,7 @@ void QBS_history::create_form() {
 	cy += HBUTTON / 2;
 	cx = chart_->x();
 
-	scroll_ = new zc_zoom_scroll_bar(cx, cy, 200, HBUTTON / 2);
+	scroll_ = new zc_zoom_scroll_bar(cx, cy, cw, HBUTTON / 2);
 	scroll_->type(FL_HORIZONTAL);
 	scroll_->callback(cb_scroll, nullptr);
 
@@ -100,10 +103,21 @@ void QBS_history::enable_widgets() {
 	else {
 		bn_done_->deactivate();
 	}
+	char l[64];
 	if (data_) {
+		int total_boxes = data_->get_current();
+		if (total_boxes > 0) {
+			std::string batch_name = data_->get_batch(total_boxes);
+			snprintf(l, sizeof(l), "HISTORY: Up to %s", batch_name.c_str());
+		} else {
+			snprintf(l, sizeof(l), "HISTORY: No batches");
+		}
+		copy_label(l);
 		copy_data_to_chart();
 	}
 	else {
+		snprintf(l, sizeof(l), "HISTORY: No batches");
+		copy_label(l);
 		chart_->clear_data_sets();
 	}
 }
@@ -157,6 +171,8 @@ void QBS_history::copy_data_to_chart() {
 }
 
 void QBS_history::update_ranges(const zc_range<double>& range) {
+	if (!range.is_valid()) return;
+	if (!chart_->can_set_axis_range(0) || !chart_->can_set_axis_range(1)) return;
 	chart_->set_axis_range(0, range);
 	int box = 0;
 	int max_value = 0;
@@ -167,6 +183,7 @@ void QBS_history::update_ranges(const zc_range<double>& range) {
 		max_value = std::max(max_value, data_->get_box(static_cast<int>(box))->recycle_info->sum_received);
 		box++;
 	}
+	if (max_value < 10) max_value = 10;
 	chart_->set_axis_range(1, { 0, max_value * 1.1 });
 	chart_->redraw();
 }
