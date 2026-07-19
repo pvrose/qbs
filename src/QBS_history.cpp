@@ -78,6 +78,7 @@ void QBS_history::create_form() {
 	scroll_ = new zc_zoom_scroll_bar(cx, cy, cw, HBUTTON / 2);
 	scroll_->type(FL_HORIZONTAL);
 	scroll_->callback(cb_scroll, nullptr);
+	scroll_->when(FL_WHEN_CHANGED);
 
 	cx = x() + w() - GAP - (2 * WBUTTON);
 	cy = y() + h() - GAP - HBUTTON;

@@ -70,6 +70,7 @@ void QBS_charth::create_form() {
 	scroll_ = new zc_zoom_scroll_bar(cx, cy, w(), HBUTTON / 2);
 	scroll_->type(FL_HORIZONTAL);
 	scroll_->callback(cb_scroll, nullptr);
+	scroll_->when(FL_WHEN_CHANGED);
 
 	end();
 }
