@@ -27,6 +27,8 @@ private:
 
 	void copy_data_to_chart();
 
+	void update_ranges(const zc_range<double>& range);	
+
 	QBS_data* data_;
 	QBS_window* win_;
 
