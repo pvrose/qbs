@@ -1,0 +1,3 @@
+{
+    "cmake.cmakePath": "${workspaceFolder}/cmake/cmake-msvc.cmd"
+}
