@@ -103,9 +103,9 @@ gm3zza_use_zzacommon(COMPONENTS zzaf zzam zzad zzafb GIT_TAG v1.2.8)
 
 ## Create executable
 if(MSVC)
-  add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${APP_RC_FILE})
+  add_executable(${TARGET} MACOSX_BUNDLE ${APP_RC_FILE})
 else()
-  add_executable(${TARGET} WIN32 MACOSX_BUNDLE)
+  add_executable(${TARGET} MACOSX_BUNDLE)
 endif()
 
 add_dependencies(${TARGET} 
