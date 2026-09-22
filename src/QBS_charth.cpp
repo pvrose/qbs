@@ -126,7 +126,8 @@ void QBS_charth::set_chart() {
 					sent = box->sent->at(call_);
 				}
 				int rcyc = 0;
-				if (box->counts->find(call_) != box->counts->end()) {
+				if (box->counts->find(call_) != box->counts->end() &&
+					box->date_recycled != "") {
 					rcyc = box->counts->at(call_);
 				}
 				received_data_.push_back(std::make_pair((double)b, (double)rcvd));
